@@ -32,7 +32,7 @@
 										<text class="cuIcon-phone"></text>
 									</view>
 								</view>
-								<picker style="width: 750rpx;" :value="form.createDate" mode="time" start="09:01" end="21:01" @change="onTimeChange">
+								<!-- <picker style="width: 750rpx;" :value="form.createDate" mode="time" start="09:01" end="21:01" @change="onTimeChange">
 									<view class="user-list x-bc">
 										<text class="list-name">日期</text>
 										<view class="x-f">
@@ -40,7 +40,7 @@
 											<text class="cuIcon-right"></text>
 										</view>
 									</view>
-								</picker>
+								</picker> -->
 								<picker style="width: 750rpx;" :value="form.carModel" :range="modelArray" @change="onModelChange">
 									<view class="user-list x-bc">
 										<text class="list-name">车型</text>
@@ -52,18 +52,9 @@
 								</picker>
 								<view class="user-list x-bc">
 									<text class="list-name">美容项目</text>
-									<jsfun-picker
-									        :listArr= "priceList"
-									        :defaultArr = "form.cosmetologyName"
-									        type="multiple" 
-											ref="jsfun"
-									        @click="priceChange" 
-									        >
-									</jsfun-picker>
+									<jsfun-picker :listArr="priceList" :defaultArr="form.cosmetologyName" type="multiple" ref="jsfun" @click="priceChange"></jsfun-picker>
 									<view class="x-f" @tap="showPicker">
-										<view>
-										    {{form.cosmetologyName}}
-										</view>
+										<view>{{ form.cosmetologyName }}</view>
 										<text class="cuIcon-right"></text>
 									</view>
 								</view>
@@ -96,17 +87,15 @@
 				<view class="left x-f">
 					<view class="tools-item y-f">
 						累计消费：
-						<text class="tool-title app-selector-rect text-blue">￥ 100</text>
+						<text class="tool-title app-selector-rect text-blue">￥ {{cumulativeAmount}}</text>
 					</view>
 					<view class="tools-item y-f">
 						余额：
-						<text class="tool-title app-selector-rect text-red">￥ 100</text>
+						<text class="tool-title app-selector-rect text-red">￥ {{balance}}</text>
 					</view>
 				</view>
 				<view class="detail-right">
-					<view class="detail-btn-box x-ac" v-if="!goodsInfo.activity">
-						<button class="cu-btn tool-btn pay-btn" @tap="billSave">立即开单</button>
-					</view>
+					<view class="detail-btn-box x-ac" v-if="!goodsInfo.activity"><button class="cu-btn tool-btn pay-btn" @tap="billSave">立即开单</button></view>
 				</view>
 			</view>
 			<!-- 分享组件 -->
@@ -134,6 +123,8 @@ export default {
 	data() {
 		return {
 			priceList: [],
+			balance: 0,
+			cumulativeAmount: 0,
 			detailType: '',
 			showServe: false,
 			tools: this.$tools,
@@ -153,7 +144,7 @@ export default {
 				phoneNumber: '',
 				carModel: '五座',
 				estimatePrice: 0,
-				projectCommission: 0,
+				projectCommission: 0
 			},
 			plateNo: '',
 			plateShow: false,
@@ -162,7 +153,8 @@ export default {
 				{
 					id: 'tab0',
 					title: '开单'
-				},{
+				},
+				{
 					id: 'tab1',
 					title: '消费记录'
 				}
@@ -171,7 +163,7 @@ export default {
 	},
 	computed: {},
 	onLoad() {
-		this.form.createDate = this.$tools.getDayList(0,0).HS
+		this.form.createDate = this.$tools.getDayList(0, 0).HS;
 		this.getProject();
 	},
 	onUnload(options) {
@@ -182,30 +174,40 @@ export default {
 	},
 	onReady() {},
 	methods: {
-		photoRecognition(){
+		photoRecognition() {
 			let that = this;
 			uni.chooseImage({
-			  	count: 1,
-			    sizeType: ['original', 'compressed'],
-			    sourceType: ['camera'], //这要注意，camera掉拍照，album是打开手机相册
-			    success: (res)=> {
+				count: 1,
+				sizeType: ['original', 'compressed'],
+				sourceType: ['camera'], //这要注意，camera掉拍照，album是打开手机相册
+				success: res => {
 					const tempFilePaths = res.tempFilePaths;
 					tempFilePaths.forEach(img => {
-						that.$tools.uploadImage('huaWei/licensePlateRecognition', img).then(uploadFileRes => {
-							let imgData = JSON.parse(uploadFileRes.data)
-							console.log(imgData);
-							console.log(imgData.data.imgUrl);
-							console.log(this);
+						that.$tools.uploadImage('file/imgUpload', img).then(uploadFileRes => {
+							that.$api('bill.licensePlateRecognition', { url: uploadFileRes }).then(reso => {
+								if (reso.flag) {
+									that.form.carNumber = reso.data.result[0].plate_number;
+									that.$api('bill.findOrdersByStatus', { carNumber: that.form.carNumber,status: '1' }).then(rescar => {
+										if (rescar.flag) {
+											that.goodsList = rescar.data.orderCars
+											that.form.carModel = rescar.data.carModel
+											that.form.phoneNumber = rescar.data.phoneNumber
+											that.balance = rescar.data.balance
+											that.cumulativeAmount = rescar.data.cumulativeAmount
+										}
+									});
+								}
+							});
 						});
 					});
-			    }
+				}
 			});
 		},
-		showPicker(){
-			let that = this
-			that.$nextTick(function(){
+		showPicker() {
+			let that = this;
+			that.$nextTick(function() {
 				that.$refs.jsfun.showPicker();
-			})
+			});
 		},
 		priceChange(data) {
 			this.form.cosmetologyName = data.textStr;
@@ -216,14 +218,23 @@ export default {
 		loadMore() {},
 		// 选择日期
 		onTimeChange(e) {
-			this.form.createDate = e.detail.value
+			this.form.createDate = e.detail.value;
 		},
 		// 选择车型
 		onModelChange(e) {
-			this.form.carModel = e.detail.value
+			this.form.carModel = e.detail.value;
 		},
 		setPlate(plate) {
-			if (plate.length >= 7) this.plateNo = plate;
+			if (plate.length >= 7)this.form.carNumber = plate;
+			this.$api('bill.findOrdersByStatus', { carNumber: this.form.carNumber,status: '1' }).then(rescar => {
+				if (rescar.flag) {
+					this.goodsList = rescar.data.orderCars
+					this.form.carModel = rescar.data.carModel
+					this.form.phoneNumber = rescar.data.phoneNumber
+					this.balance = rescar.data.balance
+					this.cumulativeAmount = rescar.data.cumulativeAmount
+				}
+			});
 			this.plateShow = false;
 		},
 		onBack() {
@@ -254,15 +265,12 @@ export default {
 				}
 			});
 		},
-		billSave(){
+		billSave() {
 			let that = this;
-			if(that.form.createDate){
-				return that.$tools.toast('请选择开单日期');
-			}
-			if(that.form.carNumber){
+			if (!that.form.carNumber) {
 				return that.$tools.toast('请录入车牌');
 			}
-			if(that.form.cosmetologyName){
+			if (!that.form.cosmetologyName) {
 				return that.$tools.toast('请选择项目');
 			}
 			that.$api('bill.addOrder', that.form).then(res => {
@@ -277,13 +285,12 @@ export default {
 		// 获取项目
 		getProject() {
 			let that = this;
-			that.$api('bill.projectForm', {
-			}).then(res => {
+			that.$api('bill.projectForm', {}).then(res => {
 				if (res.flag) {
 					that.priceList = res.data;
-				} 
+				}
 			});
-		},
+		}
 	}
 };
 </script>
@@ -365,7 +372,6 @@ export default {
 	height: 102rpx;
 	background: #fff;
 	border-bottom: 1rpx solid rgba(#dfdfdf, 0.8);
-	
 
 	.tab-item {
 		flex: 1;

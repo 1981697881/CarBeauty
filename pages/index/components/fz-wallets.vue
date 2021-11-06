@@ -2,18 +2,19 @@
 	<view class="activity-goods-box x-bc" @tap="jump('/pages/wallet/index', { confirmationId: confirmationId })">
 		<view class="img-box">
 			<slot name="tag"></slot>
-			<image class="img" :src="img" mode="scaleToFill"></image>
+			<image class="img" :src="detail.img" mode="scaleToFill"></image>
 		</view>
 		<view class="goods-right y-bc">
-			<view class="title one-t">车牌：{{ title }}</view>
-			<view class="tip one-t">接单时间：{{ subtitle }}</view>
+			<view class="title one-t padding-top">车牌：{{ detail.carNumber }}</view>
+			<view class="tip one-t">接单时间：{{ detail.createDate }}</view>
+			<view class="one-t">手机号码：{{ detail.phoneNumber }}</view>
 			<view class="slod-end"><slot name="sell"></slot></view>
-			<view class=" price-box">
+			<view class="price-box">
 				<view class="current">美容项目：</view>
 				<view class="x-f">
 					<view class="flex flex-wrap">
-						<view class="padding-xs" v-for="(item, tagindex) in 3" :key="tagindex">
-							<view class="cu-tag radius line-cync" >{{ item }}</view>
+						<view class="padding-xs" v-for="(item, tagindex) in cosmetologyName" :key="tagindex">
+							<view class="cu-tag radius" :class="'line-' + item.name">{{ item.title }}</view>
 						</view>
 					</view>
 					<!-- <view class="original">￥{{ originalPrice }}</view> -->
@@ -34,19 +35,29 @@ export default {
 	name: 'walletCard',
 	components: {},
 	data() {
-		return {};
+		return {
+			cosmetologyName: [],
+		};
 	},
 	props: {
-		cardId: 0,
-		img: '',
-		title: '',
-		subtitle: '',
-		confirmationId: '',
-		price: '',
-		originalPrice: ''
+		detail:{ //数据
+		  type: Object,
+		  default: null
+		},	
 	},
 	computed: {},
-	created() {},
+	created() {
+		if(this.detail.cosmetologyName){
+			let keyword = this.detail.cosmetologyName.split(",");
+			keyword.forEach((item,index)=>{
+				let obj = {
+					name:this.ColorList[index].name,
+					title:item
+				}
+				this.cosmetologyName.push(obj)
+			})
+		}
+	},
 	methods: {
 		// 路由跳转
 		jump(path, parmas) {
@@ -90,7 +101,7 @@ export default {
 		}
 	}
 	.fot-content {
-		padding: 20rpx;
+		padding: 10rpx;
 		width: 100%;
 		display: inline-block;
 	}
@@ -108,20 +119,18 @@ export default {
 		}
 	}
 	.goods-right {
-		padding: 20rpx;
+		padding: 10rpx;
 		width: 450rpx;
 		min-height: 200rpx;
 		position: relative;
 		align-items: flex-start;
 		position: relative;
 		.title {
-			font-size: 28rpx;
 			line-height: 28rpx;
 			width: 500rpx;
 		}
 
 		.tip {
-			font-size: 22rpx;
 			color: #a8700d;
 			width: 500rpx;
 		}
@@ -130,7 +139,7 @@ export default {
 			.current {
 				font-size: 28rpx;
 				font-weight: 500;
-				color: rgba(225, 33, 43, 1);
+				color: rgba(125, 103, 43, 1);
 			}
 
 			.original {

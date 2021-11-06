@@ -14,7 +14,7 @@
 					</view>
 					<text class="money-num">{{balInfo.Money || "0.00"}}</text>
 					<text class="text-olive">
-						<text class="padding-left">积分：{{balInfo.Point || "0.00"}}</text>
+						<text>积分：{{balInfo.Point || "0.00"}}</text>
 						   </text>
 					<text class="add">温馨提示: 任何冒充工作人员索要您帐号信息的私信均为诈骗信息,请您提高警惕,切勿上当受骗。</text>
 				</view>

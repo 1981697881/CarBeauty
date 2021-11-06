@@ -113,8 +113,7 @@ export default {
 				name: 'imgS',
 				header: {
 					authorization: uni.getStorageSync('token'),
-					"Content-Type": "multipart/form-data;charset=utf-8",
-					"Accept": "*/*",
+					/* "content-type": "multipart/form-data;charset=utf-8", */
 				},
 				success: res => {
 					res = JSON.parse(res.data);

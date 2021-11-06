@@ -1,20 +1,20 @@
 <template>
 	<view class="goods-box" v-if="detail">
-		<view class="content-box" @tap="jump('/pages/cinema/movie/list', { sectionId: detail.sectionId,scheduleId: detail.scheduleId,schedulekey:detail.scheduleKey,language: detail.language,dimensional: detail.dimensional,filmName:detail.filmName,filmId:detail.filmId,showDatetime:detail.showDatetime,hallId:detail.hallId,hallName:detail.hallName || ''})">
-			<text v-if="isTag && detail.status" class="tag-star"><text class="lg text-red cuIcon-favorfill"></text></text>
+		<view class="content-box" >
+			<text v-if="isTag" class="tag-star"><text class="lg text-red cuIcon-favorfill"></text></text>
 			<view class="cont_one">
-				<view><text class="text-bold">接单时间:</text></view>
-				<view><text class="text-gray">预计费用:</text></view>
+				<view><text class="text-bold">接单时间: {{detail.createDate}}</text></view>
+				<view><text class="text-gray">预计费用: {{detail.estimatePrice}}</text></view>
 			</view>
 			<view class="cont_two">
-				<view><text class="text-bold">车牌号:</text></view>
-				<view><text class="text-gray">结算金额:</text></view>
+				<view><text class="text-bold">车牌号: {{detail.carNumber}}</text></view>
+				<view><text class="text-gray">结算金额: {{detail.settlementPrice}}</text></view>
 			</view>
 			<view class="cont_three">
-				<view class="o_price">支付方式:</view>
+				<view class="o_price">支付方式: {{detail.payType}}</view>
 			</view>
 			<view class="cont_four">
-				<view class="text-blue">美容项目:</view>
+				<view class="text-blue">美容项目: {{detail.cosmetologyName}}</view>
 			</view>
 		</view>
 	</view>

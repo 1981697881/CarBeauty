@@ -157,13 +157,7 @@
 			"name": "宫格列表",
 			"content": {
 				"name": "",
-				"list": [{
-						"name": "我的二维码",
-						"image": "https://i.postimg.cc/h4s6JLbM/myerwem.png",
-						"path": "/pages/user/personal",
-						"path_name": "二维码",
-						"path_type": 1
-					},
+				"list": [
 					{
 						"name": "兑换券",
 						"image": "https://i.postimg.cc/GhF3kfxW/a329a448d7cb7fd2ff46a9ab0e9f5ac0.png",

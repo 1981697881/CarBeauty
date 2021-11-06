@@ -3,7 +3,7 @@
 		<view class="head_box">
 			<view class="tab-box x-f">
 				<view class="tab-item" @tap="onTab(tab)" :class="{ 'tab-active': tabCurrent === tab.id }" v-for="tab in tabList" :key="tab.id">
-					<text class="tab-title">{{ tab.title }}</text>
+					<text class="tab-title">{{ tab.title }} <text class="text-red" v-if="tab.id=='nostart'">({{tab.id=="nostart"?cumulativeAmount:'' }})</text></text>
 					<text v-show="tabCurrent === tab.id" class="tab-triangle"></text>
 				</view>
 			</view>
@@ -13,30 +13,23 @@
 			<scroll-view scroll-y="true" enable-back-to-top @scrolltolower="loadMore" class="scroll-box">
 				<view class="goods-item" v-for="item in goodsList" :key="item.id">
 					<wallet-list
-						:confirmationId="item.confirmationId"
-						:cardId="item.ticketId"
-						:title="item.filmName"
-						:subtitle="item.hallName"
-						:img="item.filmPhoto"
-						:price="item.ticketPayMoney"
+						:detail="item"
 						v-if="tabCurrent == 'ing'"
 					>
 						<block slot="sell">
 							<view class="x-f">
-								<view>预估费用：{{ item.showDatetime }}</view>
+								<view>预估费用：￥{{ item.estimatePrice }}</view>
 							</view>
 						</block>
 						<block slot="btn">
 							<view class="fot-text">
 								<view class="text-grey">
-									共
-									<text class="text-black text-bold text-xl padding-xs">{{ item.ticketCount }}</text>
-									个项目
+									操作人：<text class="text-black text-bold text-xl padding-xs">{{ item.employeeName || '暂无' }}</text>
 								</view>
 								<view class="fot-btn">
 									<button
 										v-if="btnType[tabCurrent].color == 'btn-ing'"
-										@tap.stop="collection"
+										@tap.stop="collection(item)"
 										class="cu-btn buy-btn"
 										:class="btnType[tabCurrent].color"
 									>
@@ -47,25 +40,18 @@
 						</block>
 					</wallet-list>
 					<wallet-list
-						:confirmationId="item.OrderID"
-						:cardId="item.ticketId"
-						:title="item.PName"
-						:subtitle="item.StatusName"
-						:img="item.ImagePath"
-						:price="item.OrderAmount"
+						:detail="item"
 						v-else
 					>
 						<block slot="sell">
 							<view class="x-f">
-								<view>费用：{{ item.Date }}</view>
+								<view>费用：￥{{ item.settlementPrice }}</view>
 							</view>
 						</block>
 						<block slot="btn">
 							<view class="fot-text">
 								<view class="text-grey">
-									共
-									<text class="text-black text-bold text-xl padding-xs">{{ item.OrderQty }}</text>
-									个项目
+									操作人：<text class="text-black text-bold text-xl padding-xs">{{ item.employeeName }}</text>
 								</view>
 								<view class="fot-btn">
 									<button
@@ -89,7 +75,7 @@
 				<app-load v-model="isLoading"></app-load>
 			</scroll-view>
 		</view>
-		<app-lmodal ref="customModal" modalTitle="实收金额" @onClickCancel="cancel" @onClickConfirm="confirm"></app-lmodal>
+		<app-lmodal ref="customModal" :detail="employeeList" modalTitle="实收金额" @onClickCancel="cancel" @onClickConfirm="confirm"></app-lmodal>
 		<view class="foot_box"></view>
 		<!-- 自定义底部导航 -->
 		<!-- <app-tabbar></app-tabbar> -->
@@ -134,9 +120,13 @@ export default {
 			lastPage: 1,
 			currentPage: 1,
 			status: 0,
+			cumulativeAmount: 0,
 			tabCurrent: 'ing',
 			goodsList: [],
+			employeeList: [],
+			payItem: {},
 			loading: false,
+			payType: null,
 			btnType: {
 				ing: {
 					name: '付款',
@@ -178,6 +168,7 @@ export default {
 			this.getGoodsList();
 		}*/
 		this.getIsUse();
+		this.getEmployeeList();
 	},
 	methods: {
 		...mapActions(['getUserDetails']),/* , 'getOrderNum' */
@@ -191,6 +182,14 @@ export default {
 					uni.stopPullDownRefresh();
 				});
 		},
+		getEmployeeList(){
+			let that = this;
+			that.$api('bill.employeeList', {}).then(res => {
+				if (res.flag) {
+					that.employeeList = res.data
+				}
+			});	
+		},
 		getIsUse(){
 			let that = this;
 			that.$api('user.isUseJurisdiction', {}).then(res => {
@@ -203,11 +202,12 @@ export default {
 		confirm(val){
 			let that = this;
 			console.log(val)
-			that.$api('bill.updateOrder', {
-				filmId: '051201092021'
-			}).then(res => {
+			that.payItem.employeeName = val.user.toString()
+			that.payItem.settlementPrice = val.price
+			that.$api('bill.updateOrder', that.payItem).then(res => {
 				if (res.flag) {
 					that.$tools.toast(res.msg);
+					that.payItem = {};
 					that.getGoodsList();
 				} else {
 					that.$tools.toast(res.msg);
@@ -218,23 +218,15 @@ export default {
 			
 		},
 		//收款
-		collection(){
+		collection(item){
 			let that = this;
+			that.payItem = {...item};
+			let payType = ['余额', '现金', '微信', '支付宝', '其他平台']
 			uni.showActionSheet({
-			    itemList: ['余额', '现金', '微信', '支付宝', '其他'],
+			    itemList: payType,
 			    success: function (res) {
-					switch(res.tapIndex){
-						case 0:
-						break;
-						case 1:
-						break;
-						case 2:
-						break;
-						case 3:
-						break;
-						case 4:
-						break;
-					}
+					console.log(res)
+					that.payItem.payType = payType[res.tapIndex],
 					that.$nextTick(function(){
 						that.$refs['customModal'].showModal()
 					})
@@ -258,6 +250,7 @@ export default {
 			this.tabCurrent = val.id;
 			this.status = val.status;
 			this.currentPage = 1;
+			this.getGoodsList();
 			// this.goodsList = [];
 			// if (this.tabCurrent == 'ing') {
 			// 	this.getGoodsList();
@@ -286,15 +279,16 @@ export default {
 		// 订单列表
 		getGoodsList() {
 			let that = this;
-			/* that.isLoading = true; */
+			that.isLoading = true;
 			that.loadStatus = 'loading';
 			that.$api('bill.findOrdersByStatus', {	
 				status: that.status
 			}).then(res => {
 				if (res.flag) {
 					that.isLoading = false;
-					that.goodsList = res.data;
+					that.goodsList = res.data.orderCars;
 					that.loadStatus = 'over';
+					that.cumulativeAmount = res.data.cumulativeAmount
 				}
 			});
 		},

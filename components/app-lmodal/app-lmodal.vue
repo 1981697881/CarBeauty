@@ -5,7 +5,7 @@
 			<view class="modal-title" v-if="modalTitle !== ''">{{ modalTitle }}</view>
 			<view class="modal-body">
 				<input type="number" v-model="inputSerialNum" style="padding-left: 10rpx;font-size: 30rpx;border: 1rpx solid rgba(0, 0, 0, 0.1);" class="uni-input margin-bottom" focus placeholder="价格" />
-				<ld-select :multiple="true" :list="options" label-key="label" value-key="value" placeholder="操作人员" clearable v-model="value2" @change="selectChange2"></ld-select>
+				<ld-select :multiple="true" :list="detail" label-key="name" value-key="name" placeholder="操作人员" clearable v-model="value" @change="selectChange"></ld-select>
 			</view>
 			<view>
 				<view class="btn cancel" :style="{ color: cancelTextColor }" @click="handleCancel">{{ cancelText }}</view>
@@ -54,52 +54,36 @@ export default {
 		confirmTextColor: {
 			type: String,
 			default: '#5999FF'
+		},
+		detail:{
+			type:Array,
+			default:[]
 		}
 	},
 	data() {
 		return {
 			isShowModal: false,
 			inputSerialNum: '',
-			options: [
-				{
-					value: '选项1',
-					label: '黄金糕'
-				},
-				{
-					value: '选项2',
-					label: '双皮奶'
-				},
-				{
-					value: '选项3',
-					label: '蚵仔煎'
-				},
-				{
-					value: '选项4',
-					label: '龙须面'
-				},
-				{
-					value: '选项5',
-					label: '北京烤鸭'
-				}
-			],
-			value2: []
+			value: []
 		};
 	},
 	methods: {
-		selectChange2(val) {
-			this.value2 = val;
+		selectChange(val) {
+			this.value = val;
 		},
 		showModal() {
 			this.isShowModal = true;
+			this.inputSerialNum= '';
+			this.value= [];
 		},
 		handleCancel() {
 			this.isShowModal = false;
 			this.$emit('onClickCancel', 'cancel');
 		},
 		handleConfirm() {
-			if (this.inputSerialNum.replace(/(^s*)|(s*$)/g, "").length >0 && this.value2.length>0) {
+			if (this.inputSerialNum.replace(/(^s*)|(s*$)/g, "").length >0 && this.value.length>0) {
 				this.isShowModal = false; 
-				this.$emit('onClickConfirm', {price: this.inputSerialNum,user: this.value2});
+				this.$emit('onClickConfirm', {price: this.inputSerialNum,user: this.value});
 			} else {
 				this.$tools.toast('价格和操作人员不能为空');
 			}

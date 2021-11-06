@@ -16,13 +16,13 @@ export default {
 		// desc: '获取门店',
 	},
 	posterList:{
-		url: 'app/api/posterList',
+		url: 'applet/api/posterList',
 		auth: false,
 		method: 'POST',
 		// desc: '获取广告轮播',
 	},
 	menuList:{
-		url: 'app/api/menuList',
+		url: 'applet/api/menuList',
 		auth: false,
 		method: 'POST',
 		// desc: '获取菜单',
