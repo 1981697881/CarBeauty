@@ -21,7 +21,7 @@
 									<text class="list-name">车牌</text>
 									<view class="x-f">
 										<input class="list-val" disabled="inputDisabled" @tap="plateShow = true" v-model.trim="form.carNumber" />
-										<text class="cuIcon-scan" @tap="photoRecognition"></text>
+										<text class="cuIcon-scan icon-size" @tap="photoRecognition"></text>
 										<plate-input v-if="plateShow" :plate="form.carNumber" @export="setPlate" @close="plateShow = false" />
 									</view>
 								</view>
@@ -29,7 +29,7 @@
 									<text class="list-name">手机号码</text>
 									<view class="x-f">
 										<input class="list-val" v-model="form.phoneNumber" />
-										<text class="cuIcon-phone"></text>
+										<text class="cuIcon-phone icon-size" ></text>
 									</view>
 								</view>
 								<!-- <picker style="width: 750rpx;" :value="form.createDate" mode="time" start="09:01" end="21:01" @change="onTimeChange">
@@ -45,8 +45,8 @@
 									<view class="user-list x-bc">
 										<text class="list-name">车型</text>
 										<view class="x-f">
-											<text class="list-val">{{ form.carModel || startDate }}</text>
-											<text class="cuIcon-right"></text>
+											<text class="list-val">{{ form.carModel || '' }}</text>
+											<text class="cuIcon-right icon-size"></text>
 										</view>
 									</view>
 								</picker>
@@ -55,7 +55,7 @@
 									<jsfun-picker :listArr="priceList" :defaultArr="form.cosmetologyName" type="multiple" ref="jsfun" @click="priceChange"></jsfun-picker>
 									<view class="x-f" @tap="showPicker">
 										<view>{{ form.cosmetologyName }}</view>
-										<text class="cuIcon-right"></text>
+										<text class="cuIcon-right icon-size"></text>
 									</view>
 								</view>
 								<view class="user-list x-bc">
@@ -222,7 +222,7 @@ export default {
 		},
 		// 选择车型
 		onModelChange(e) {
-			this.form.carModel = e.detail.value;
+			this.form.carModel = this.modelArray[e.detail.value];
 		},
 		setPlate(plate) {
 			if (plate.length >= 7)this.form.carNumber = plate;
@@ -296,6 +296,9 @@ export default {
 </script>
 
 <style lang="scss">
+	.icon-size{
+		font-size: 50rpx !important;
+	}
 .user-list {
 	background: #fff;
 	height: 100rpx;

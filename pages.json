@@ -64,6 +64,44 @@
 				"title": "电玩充值",
 				"group": "电玩"
 			}
+		},{
+			"path": "pages/menu/menu",
+			"name": "shoppingMall",
+			"style": {
+				"navigationBarTitleText": "商城"
+			},
+			"meta": {
+				"auth": false,
+				"async": true,
+				"title": "小食和商品",
+				"group": "卖品"
+			}
+		}, {
+			"path": "pages/menu/detail",
+			"name": "shoppingMallDetail",
+			"style": {
+				"navigationBarTitleText": "商品明细",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			},
+			"meta": {
+				"auth": false,
+				"async": true,
+				"title": "商品详情",
+				"group": "卖品"
+			}
+		},{
+			"path": "pages/menu/pay",
+			"name": "menu",
+			"style": {
+				"navigationBarTitleText": "支付"
+			},
+			"meta": {
+				"auth": true,
+				"async": true,
+				"title": "小食和商品",
+				"group": "卖品"
+			}
 		}
 	],
 	// 分包加载
@@ -649,6 +687,11 @@
 		"iconWidth": "24px",
 		"spacing": "3px",
 		"list": [{
+			"pagePath": "pages/menu/menu",
+			"iconPath": "static/tabbar/_202105251003581.png",
+			"selectedIconPath": "static/tabbar/_202105251003580.png",
+			"text": "精品"
+		},{
 			"pagePath": "pages/index/index",
 			"iconPath": "static/tabbar/_202105251003583.png",
 			"selectedIconPath": "static/tabbar/_202105251003582.png",

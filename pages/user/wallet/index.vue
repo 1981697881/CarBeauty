@@ -93,7 +93,7 @@ export default {
 			if (that.userInfo.phoneNumber) {
 				uni.showToast({
 					icon: 'none',
-					title: '暂未开放'
+					title: '暂未开放，敬请期待'
 				});
 				//that.routerTo('https://server.zk2016.com/outside/web/auth/miniAuth.do?placeId=77BAF153-CDE4-466E-B394-C69240E79077&redirect_uri=/pages/user/wallet/bind-bank')
 			} else {
@@ -108,7 +108,7 @@ export default {
 			if (that.userInfo.phoneNumber) {
 				uni.showToast({
 					icon: 'none',
-					title: '暂未开放'
+					title: '暂未开放，敬请期待'
 				});
 				//that.routerTo('https://server.zk2016.com/outside/web/auth/miniAuth.do?placeId=77BAF153-CDE4-466E-B394-C69240E79077&redirect_uri=/pages/user/register')
 			} else {

@@ -17,7 +17,7 @@
 			 :key="index" 
 			 @tap="itemClick(item)"
 			 :class="{'active':item.select}"
-			 >{{item.cosmetologyPoject}}</view>
+			 >{{item.cosmetologyProject}}</view>
 		 </view > 
 		 <view class="list" v-else>
 		 	 未接收到数据
@@ -95,7 +95,7 @@
 				let commission = 0;
 				this.listArr.forEach((item)=>{
 					let defalutSelect = false;
-					if(defaultArr.length>0 && defaultArr.indexOf(item.cosmetologyPoject)!=-1){
+					if(defaultArr.length>0 && defaultArr.indexOf(item.cosmetologyProject)!=-1){
 						defalutSelect = true;
 						standardPrice+=Number(item.standardPrice)
 						commission+=Number(item.commissionPrice)
@@ -118,7 +118,7 @@
 				if(this.type=="single"){
 					for (let item1 in this.listArrNew) {
 						var obj = this.listArrNew[item1];
-						if( obj.cosmetologyPoject != item.cosmetologyPoject) obj.select = false;
+						if( obj.cosmetologyProject != item.cosmetologyProject) obj.select = false;
 					}
 				}
 				
@@ -139,9 +139,9 @@
 				var data = {},list = {},textStr = "",indexStr = "";
 				this.listArrNew.forEach((item,index)=>{
 					if(item.select){
-						list[index] = item.cosmetologyPoject
+						list[index] = item.cosmetologyProject
 						indexStr += (indexStr==""?"":",") + index
-						textStr += (textStr==""?"":",") + item.cosmetologyPoject
+						textStr += (textStr==""?"":",") + item.cosmetologyProject
 					}
 				})
 				data['list'] = list

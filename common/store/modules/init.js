@@ -104,7 +104,7 @@ const actions = {
 					let obj = {
 					"name": v.posterName,
 					"bgcolor": "#2B4055",
-					"image": "https://cfzx.gzfzdev.com/movie/uploadFiles/image/"+v.posterPhoto,
+					"image": v.posterPhoto,
 					"path": v.posterUrl || 'pages/index/index',
 					"path_name": "",
 					"path_type": 1

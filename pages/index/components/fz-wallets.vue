@@ -7,7 +7,7 @@
 		<view class="goods-right y-bc">
 			<view class="title one-t padding-top">车牌：{{ detail.carNumber }}</view>
 			<view class="tip one-t">接单时间：{{ detail.createDate }}</view>
-			<view class="one-t">手机号码：{{ detail.phoneNumber }}</view>
+			<view class="one-t">手机号码：{{ detail.phoneNumber  || '' }}</view>
 			<view class="slod-end"><slot name="sell"></slot></view>
 			<view class="price-box">
 				<view class="current">美容项目：</view>
