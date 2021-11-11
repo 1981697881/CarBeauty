@@ -120,15 +120,35 @@ export default {
 			method: 'PUT',
 			// desc: '职员列表',
 		},projectForm: {
-			url: 'pojectCar/projectForm',
+			url: 'projectCar/projectForm',
 			auth: true,
 			method: 'POST',
 			// desc: '项目列表',
+		},selectVipList: {
+			url: 'vipCar/selectVipList',
+			auth: true,
+			method: 'POST',
+			// desc: '会员卡列表',
 		},licensePlateRecognition: {
 			url: 'huaWei/licensePlateRecognition',
 			auth: true,
 			method: 'POST',
 			// desc: '车牌识别',
+		},increaseRecharge: {
+			url: 'vipCar/increaseRecharge',
+			auth: true,
+			method: 'POST',
+			// desc: '充值',
+		},playList: {
+			url: 'applet/api/playList',
+			auth: true,
+			method: 'POST',
+			// desc: '精品套餐列表',
+		},playMessage: {
+			url: 'applet/api/playMessage',
+			auth: true,
+			method: 'POST',
+			// desc: '精品套餐详情',
 		},
 	},
 	/** 同步路由 ↓ **/

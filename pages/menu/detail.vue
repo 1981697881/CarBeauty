@@ -2,13 +2,13 @@
 	<view class="box">
 		<cu-custom :isBack="true" bgColor="bg-gray">
 			<block slot="backText"></block>
-			<block slot="content">{{ goodsInfo.PackageName }}</block>
+			<block slot="content">{{ goodsInfo.playName }}</block>
 		</cu-custom>
 		<view class="detail_box app-selector">
 			<view class="detail-content">
 				<view class="goodes_detail_swiper-box">
 					<swiper class="carousel" circular @change="swiperChange" :autoplay="true">
-						<swiper-item @tap="tools.previewImage(goodsInfo.ImageArray, swiperCurrent)" v-for="(img, index) in goodsInfo.ImageArray" :key="index" class="carousel-item">
+						<swiper-item @tap="tools.previewImage(goodsInfo.playPosterphotoList, swiperCurrent)" v-for="(img, index) in goodsInfo.playPosterphotoList" :key="index" class="carousel-item">
 							<image class="swiper-image app-selector-rect" :src="img" mode="aspectFill" lazy-load></image>
 						</swiper-item>
 					</swiper>
@@ -94,15 +94,14 @@ export default {
 			tabList: [
 				{
 					id: 'tab0',
-					title: '商品详情'
+					title: '套餐详情'
 				},
 			]
 		};
 	},
 	computed: {
 		...mapState({
-			 storeInfo: state => state.user.storeInfo,
-			balInfo: state => state.user.balInfo
+			 storeInfo: state => state.user.storeInfo
 		}),
 	},
 	onLoad() {
@@ -161,14 +160,11 @@ export default {
 		// 商品详情
 		getGoodsDetail() {
 			let that = this;
-			that.$api('goods.detail', {
-				packageId: that.$Route.query.PackageId,
-				custId: that.balInfo.custId,
-				placeId: that.storeInfo.v8PlaceId,
-					V8Url: that.storeInfo.v8Url,
+			that.$api('bill.playMessage', {
+				playId: that.$Route.query.PackageId,
 			}).then(res => {
 				if (res.flag) {
-					that.goodsInfo = res.data.Data;
+					that.goodsInfo = res.data;
 					that.goodsInfo.type='Movie';
 				}else{
 					that.$tools.toast(res.msg);

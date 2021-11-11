@@ -9,7 +9,7 @@
 				<view class="cu-bar search bg-white" style="height: 60upx;">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
-						<input :adjust-position="false" type="text" v-model.trim="listParams.phoneNumber"  placeholder="搜索"
+						<input :adjust-position="false" type="text" v-model.trim="listParams.phoneNumber"  placeholder="搜索会员，手机号码或车牌号"
 							confirm-type="search"></input>
 					</view>
 					<view class="action">

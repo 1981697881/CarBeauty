@@ -2,41 +2,36 @@
 	<view class="page_box">
 		<view class="head_box margin-top">
 			<view class="cu-form-group text-xl text-bold text-brown">用户：{{orderDetail.vipName || ''}}</view>
-			<view class="cu-form-group text-grey">手机号码：{{ orderDetail.phoneNumber || "" }}</view>
-			<view class="cu-form-group text-bold">充值套餐：</view>
-		</view>
-		<view class="content_box">
-			<view class="y-f money-box">
-				<button v-for="(item, index) in setMeal" :key="index" class="money"
-					:class="checkItem == index ? 'moneyAct' : ''" @tap="checkMoney" :data-target="index"
-					:data-price="item.price">
-					{{ item.price }}
-				</button>
-			</view>
-			<radio-group @change="selPay" class="pay-box" v-if="payment">
-				<label class="x-bc pay-item" v-if="payment.includes('wechat')">
+			<view class="cu-form-group">手机号码：{{ orderDetail.phoneNumber || "" }}</view>
+			<view class="pay-box">
+				<label class="x-bc pay-item">
 					<view class="x-f">
-						<image class="pay-img" src="https://cfzx.gzfzdev.com/movie/uploadFiles/image/wx_pay.png"
-							mode=""></image>
-						<text>微信支付</text>
+						<image class="pay-img" src="https://i.postimg.cc/QdN88nNq/wallet-pay.png" mode=""></image>
+						<text>金额</text>
 					</view>
-					<radio value="wechat" :class="{ checked: payType === 'wechat' }" class=" pay-radio orange"
-						:checked="payType === 'wechat'"></radio>
+					<input type="number" class="price-input text-right" v-model.trim="rechargeAmount" placeholder="请输入金额"/>
 				</label>
-			</radio-group>
-			<view class="notice x-bc">
-				<view class="notice-title">充值须知</view>
-				<view class="notice-detail">
-					<view>充值之后<text class="text-bold text-xl">不可退款</text>并且<text
-							class="text-bold text-xl">不可提现</text>，请选择合适的充值金额后确认充值，谢谢</view>
+			</view>
+			<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">充值套餐：</view>
+		</view>
+		<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
+			scroll-with-animation>
+			<view class="content_box">
+				<view class="y-f money-box">
+					<view style="clear: both;width: 100%;border-bottom: 1rpx solid #eeeeee;" v-for="(item, index) in setMeal" :key="index"
+						class="grid text-left col-2 padding">
+						<view>项目：<text class="text-orange">{{item.cosmetologyProject}}</text></view>
+						<view class="text-grey"><input type="number" class="price-input text-right" v-model.trim="item.frequency" placeholder="项目次数"/></view>
+					</view>
 				</view>
 			</view>
+		</scroll-view>
+		<view class="foot_box">
 			<view class="x-c">
-				<button class="cu-btn pay-btn bg-cyan" :disabled="isSubOrder" @tap="confirmPay">确认支付
-					￥{{ checkPrice }}</button>
+				<button class="cu-btn pay-btn bg-cyan" :disabled="isSubOrder" @tap="confirmPay">确认充值
+					￥{{ rechargeAmount }}</button>
 			</view>
 		</view>
-		<view class="foot_box"></view>
 		<!-- 登录提示 -->
 		<app-login-modal></app-login-modal>
 	</view>
@@ -54,24 +49,12 @@
 		components: {},
 		data() {
 			return {
-				setMeal: [{
-					price: "200",
-					itemId: 1,
-				}, {
-					price: "300",
-					itemId: 2,
-				}, {
-					price: "500",
-					itemId: 3,
-				}, {
-					price: "1000",
-					itemId: 4,
-				}],
+				setMeal: [],
 				isSubOrder: false,
 				payType: 'wechat',
 				options: {},
-				checkItem: 0,
-				checkPrice: 200,
+				hHeight: 0,
+				rechargeAmount: '',
 				orderDetail: {},
 				isAndroid: uni.getStorageSync('isAndroid'),
 				platform: uni.getStorageSync('platform')
@@ -102,6 +85,7 @@
 			}
 			uni.removeStorageSync('payReload');
 			// #endif
+			this.getProject();
 		},
 		onShow() {},
 		onHide() {
@@ -109,6 +93,19 @@
 		},
 		methods: {
 			...mapActions(['getUserBalance']),
+			getScrHeight() {
+				let me = this;
+				uni.getSystemInfo({
+					success: function(res) {
+						// res - 各种参数
+						let info = uni.createSelectorQuery().select('.head_box');
+						info.boundingClientRect(function(data) {
+							//data - 各种参数
+							me.hHeight = res.windowHeight - data.height;
+						}).exec();
+					}
+				});
+			},
 			checkMoney(e) {
 				if (this.checkItem == e.target.dataset.target) {
 					return
@@ -117,65 +114,64 @@
 					this.checkPrice = e.target.dataset.price
 				}
 			},
-			selPay(e) {
-				this.payType = e.detail.value;
+			// 获取项目
+			getProject() {
+				let that = this;
+				that.$api('bill.projectForm', {}).then(res => {
+					if (res.flag) {
+						res.data.forEach((item)=>{
+							item.frequency = 0;
+						})
+						that.setMeal = res.data;
+					}
+				});
 			},
 			// 发起支付
 			confirmPay() {
 				let that = this;
-				if (that.userInfo.phoneNumber) {
-					uni.showToast({
-						icon: 'none',
-						title: '此功能尚未开放....敬请期待'
-					})
-					/* if (that.balInfo.custId) {
-						let params = {
-							rechargeMoney: that.checkPrice + "",
-							openId: uni.getStorageSync('openid'),
-							custId: that.balInfo.custId,
-							storeId: that.storeInfo.id,
+				if (that.rechargeAmount) {
+					let number = 0
+					that.setMeal.forEach((item)=>{
+						if(item.frequency>0){
+							number++
 						}
-						let pay = new AppPay(that.payType, that.orderDetail, "user.payRecharge", params, 3);
-					} else {
+					})
+					if(number > 0){
+						this.$api('bill.increaseRecharge', {
+							custId: this.balInfo.custId,
+							qty: that.checkPrice,
+							placeId: that.storeInfo.v8PlaceId,
+							V8Url: that.storeInfo.v8Url,
+							storeId: that.storeInfo.id,
+							phoneNumber: this.userInfo.phoneNumber,
+						}).then(res => {
+							if (res.flag) {
+								uni.showToast({
+									icon: 'none',
+									title: res.msg
+								})
+								that.isSubOrder = false
+								that.getUserBalance()
+								/* that.jump('/pages/index/wallet', res.data); */
+							} else {
+								uni.showToast({
+									icon: 'none',
+									title: res.msg
+								})
+							}
+						});
+					}else{
 						uni.showToast({
 							icon: 'none',
-							title: '新用戶暂还没开放充值，敬请期待'
+							title: '请输入项目次数'
 						})
-					} */
+					}
 				} else {
 					uni.showToast({
 						icon: 'none',
-						title: '需提供手机号码，请到“我的”页面，填写或者授权手机号码'
+						title: '请输入金额'
 					})
 				}
-			},
-			//第三方订单接口
-			confirmOrder() {
-				let ticketList = []
-				let that = this
-				this.$api('user.recharge', {
-					custId: this.balInfo.custId,
-					qty: that.checkPrice,
-					placeId: that.storeInfo.v8PlaceId,
-					V8Url: that.storeInfo.v8Url,
-					storeId: that.storeInfo.id,
-					phoneNumber: this.userInfo.phoneNumber,
-				}).then(res => {
-					if (res.flag) {
-						uni.showToast({
-							icon: 'none',
-							title: res.msg
-						})
-						that.isSubOrder = false
-						that.getUserBalance()
-						/* that.jump('/pages/index/wallet', res.data); */
-					} else {
-						uni.showToast({
-							icon: 'none',
-							title: res.msg
-						})
-					}
-				});
 			},
 		}
 	};
@@ -211,14 +207,11 @@
 
 	.money-box {
 		background: #fff;
-		height: 340rpx;
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: flex-start;
 		align-content: flex-start;
-		margin-bottom: 20rpx;
-
 		.money {
 			text-align: center;
 			width: 220rpx;
@@ -247,16 +240,11 @@
 
 	.pay-box {
 		.pay-item {
-			height: 90rpx;
-			padding: 0 30rpx;
-			font-size: 26rpx;
-			background: #fff;
+			padding: 1rpx 30rpx;
+			min-height: 100rpx;
 			width: 750rpx;
+			border-top: 1rpx solid #eeeeee;
 			border-bottom: 1rpx solid #eeeeee;
-
-			&:last-child {
-				border-bottom: none;
-			}
 
 			.pay-radio {
 				transform: scale(0.8);
@@ -268,6 +256,10 @@
 				// background: #ccc;
 				margin-right: 25rpx;
 			}
+
+			.price-input {
+				border-radius: 5px;
+			}
 		}
 	}
 
@@ -276,6 +268,5 @@
 		height: 80rpx;
 		border-radius: 40rpx;
 		box-shadow: 1px 1px 1px 1px #cce6ff;
-		margin-top: 100rpx;
 	}
 </style>

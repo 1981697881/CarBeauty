@@ -4,73 +4,31 @@
 			<view class="main" v-if="goods.length">
 				<view class="nav">
 					<view class="coupon">
-						<text class="title">小食和商品</text>
+						<text class="title">精品套餐</text>
 						<view class="iconfont iconarrow-right"></view>
 					</view>
 				</view>
 				<view class="content">
-					<!-- <scroll-view class="menus" :scroll-into-view="menuScrollIntoView" scroll-with-animation scroll-y>
-						<view class="wrapper">
-							<view
-								class="menu"
-								:id="`menu-${item.id}`"
-								:class="{ current: item.id === currentCateId }"
-								v-for="(item, index) in goods"
-								:key="index"
-								@tap="handleMenuTap(item.id)"
-							>
-								<text>{{ item.name }}</text>
-								<view class="dot" v-show="menuCartNum(item.id)">{{ menuCartNum(item.id) }}</view>
-							</view>
-						</view>
-					</scroll-view> -->
 					<!-- goods list begin -->
 					<scroll-view class="goods" scroll-with-animation scroll-y :scroll-top="cateScrollTop" @scroll="handleGoodsScroll">
 						<view class="wrapper">
-							<!-- <swiper class="ads" id="ads" autoplay :interval="3000" indicator-dots>
-								<swiper-item v-for="(item, index) in ads" :key="index"><image :src="item.image"></image></swiper-item>
-							</swiper> -->
 							<view class="list">
 								<!-- category begin -->
 								<view class="category" >
 									<view class="items">
 										<!-- 商品 begin  "-->
 										<view class="good" v-for="(good, key) in goods" :key="key">
-											<image @tap="jump('/pages/menu/detail', { PackageId: good.PackageId })" :src="good.ImagePath|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" class="image"></image>
+											<image @tap="jump('/pages/menu/detail', { PackageId: good.playId })" :src="good.playPosterphotos|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" class="image"></image>
 											<view class="right">
-												<text class="name">{{good.PackageName}}</text>
+												<text class="name">{{good.playName}}</text>
 												<text class="tips">{{good.Note}}</text>
 												<view class="price_and_action">
-													<text class="price">￥{{ good.PackageAmount }} <text class="price text-gray" style="text-decoration:line-through">￥{{ good.OriginalPrice }}</text></text> 
+													<text class="price">￥{{ good.playPrice }} <text class="price text-gray" style="text-decoration:line-through">￥{{ good.OriginalPrice }}</text></text> 
 													<view class="btn-group">
-														销量:<text class="text-red padding-right">{{good.SaleQty}}</text>
 														<button class="cu-btn cuIcon sm round shadow bg-orange" @tap="toPay(good)">
 															<text class="cuIcon-cart"></text>
 														</button>
 													</view>
-													<!-- <view class="btn-group" v-if="good.use_property">
-														<button  class="btn property_btn bg-green" hover-class="none" size="mini" @tap="showGoodDetailModal(item, good)">
-															选规格
-														</button>
-														<view class="dot" v-show="goodCartNum(good.goodsId)">{{ goodCartNum(good.goodsId) }}</view>
-													</view>
-													<view class="btn-group" v-else>
-														<button
-															type="default"
-															v-show="goodCartNum(good.goodsId)"
-															plain
-															class="btn reduce_btn cuIcon"
-															size="mini"
-															hover-class="none"
-															@tap="handleReduceFromCart('', good)"
-														>
-															<view class="cuIcon-move"></view>
-														</button>
-														<view class="number" v-show="goodCartNum(good.goodsId)">{{ goodCartNum(good.goodsId) }}</view>
-														<button class="btn add_btn cuIcon bg-green" size="min" hover-class="none" @tap="handleAddToCart('', good, 1)">
-															<view class="cuIcon-add"></view>
-														</button>
-													</view> -->
 												</view>
 											</view>
 										</view>
@@ -145,46 +103,6 @@
 				<view class="add-to-cart-btn" @tap="handleAddToCartInModal"><view>加入购物车</view></view>
 			</modal>
 			<!-- 商品详情模态框 end -->
-			<!-- 购物车详情popup -->
-			<!-- <popup-layer direction="top" :show-pop="cartPopupVisible" class="cart-popup">
-				<template slot="content">
-					<view class="top"><text @tap="handleCartClear">清空</text></view>
-					<scroll-view class="cart-list" scroll-y>
-						<view class="wrapper">
-							<view class="item" v-for="(item, index) in cart" :key="index">
-								<view class="left">
-									<view class="name">{{ item.goodsName }}</view>
-									<view class="props"></view>
-								</view>
-								<view class="center">
-									<text>￥{{ item.goodsPrice }}</text>
-								</view>
-								<view class="right">
-									<button type="default" plain size="mini" class="btn cuIcon" hover-class="none" @tap="handleCartItemReduce(index)">
-										<view class="cuIcon-move"></view>
-									</button>
-									<view class="number">{{ item.goodsCount }}</view>
-									<button type="primary" class="btn cuIcon" size="min" hover-class="none" @tap="handleCartItemAdd(index)">
-										<view class="cuIcon-add"></view>
-									</button>
-								</view>
-							</view>
-							<view class="item" v-if="orderType == 'takeout' && store.packing_fee">
-								<view class="left"><view class="name">包装费</view></view>
-								<view class="center">
-									<text>￥{{ parseFloat(store.packing_fee) }}</text>
-								</view>
-								<view class="right invisible">
-									<button type="default" plain size="mini" class="btn cuIcon" hover-class="none"><view class="cuIcon-move"></view></button>
-									<view class="number">1</view>
-									<button type="primary" class="btn cuIcon" size="min" hover-class="none"><view class="cuIcon-add"></view></button>
-								</view>
-							</view>
-						</view>
-					</scroll-view>
-				</template>
-			</popup-layer> -->
-			<!-- 购物车详情popup -->
 		</view>
 		<view class="loading" v-else><image src="/static/imgs/loading.gif"></image></view>
 		<view class="foot_box"></view>
@@ -237,7 +155,6 @@ export default {
 	async onShow() {
 		let that = this
 		await this.getUserDetails();
-		
 		await this.init();
 	},
 	/* async onLoad() {
@@ -245,7 +162,6 @@ export default {
 	}, */
 	computed: {
 		...mapState({
-			balInfo: state => state.user.balInfo,
 			userInfo: state => state.user.userInfo,
 			 storeInfo: state => state.user.storeInfo,
 		}),
@@ -287,21 +203,17 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['getUserBalance','getUserDetails']),
+		...mapActions(['getUserDetails']),
 		// 初始化
 		async init() {
 			//页面初始化
 			this.loading = true;
 			let me = this;
-			await this.getUserBalance();
 			this.goods = {}
-			me.$api('goods.lists', {
-				custId: me.balInfo.custId,
-				placeId: me.storeInfo.v8PlaceId,
-				V8Url: me.storeInfo.v8Url,
+			me.$api('bill.playList', {
 			}).then(res => {
 				if (res.flag) {
-					this.goods = res.data.Data;
+					this.goods = res.data;
 				}
 			});
 			this.loading = false;
