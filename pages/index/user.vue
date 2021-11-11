@@ -9,8 +9,8 @@
 				<view class="cu-bar search bg-white" style="height: 60upx;">
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
-						<input :adjust-position="false" type="text" v-model.trim="listParams.phoneNumber"  placeholder="搜索会员，手机号码或车牌号"
-							confirm-type="search"></input>
+						<input :adjust-position="false" type="text" v-model.trim="listParams.phoneNumber"
+							placeholder="搜索会员，手机号码或车牌号" confirm-type="search"></input>
 					</view>
 					<view class="action">
 						<button class="cu-btn bg-green shadow-blur round" @tap="search">搜索</button>
@@ -22,15 +22,7 @@
 					scroll-with-animation @scrolltolower="loadMore">
 					<view class="content-box">
 						<view class="goods-list x-f">
-							<view class="goods-item" v-for="goods in vipList" @tap="
-									jump('/pages/user/wallet/recharge', {
-										vipName: goods.vipName,
-										phoneNumber: goods.phoneNumber,
-										carModel: goods.carModel,
-										carNumber: goods.carNumber,
-										id: goods.id
-									})
-								">
+							<view class="goods-item" v-for="goods in vipList" @tap="handlerVip(goods)">
 								<view class="goods-box">
 									<view class="content-box">
 										<view class="cont-tier flex flex-wrap justify-between">
@@ -129,7 +121,7 @@
 			/* this.$store.commit('CART_NUM'); */
 			this.init();
 			this.getScrHeight();
-			
+			this.getVipList();	
 		},
 		methods: {
 			...mapActions(['getUserDetails']),
@@ -150,6 +142,28 @@
 					this.listParams.page += 1;
 					this.getVipList();
 				}
+			},
+			handlerVip(goods) {
+				let that = this;
+				let handlerType = ['充值', '修改']
+				uni.showActionSheet({
+					itemList: handlerType,
+					success: function(res) {
+						that.jump('/pages/user/wallet/recharge', {
+							vipName: goods.vipName,
+							phoneNumber: goods.phoneNumber,
+							carModel: goods.carModel,
+							carNumber: goods.carNumber,
+							handlerType: res.tapIndex,
+							vipProjectCars: JSON.stringify(goods.vipProjectCars),
+							id: goods.id
+						})
+					},
+					fail: function(res) {
+						console.log(res.errMsg);
+					}
+				});
+				
 			},
 			search() {
 				this.getVipList();
@@ -200,10 +214,12 @@
 <style lang="scss">
 	.goods-list {
 		flex-wrap: wrap;
+
 		.goods-item {
 			width: 100%;
 		}
 	}
+
 	.goods-box {
 		width: 700rpx;
 		margin-top: 20rpx;

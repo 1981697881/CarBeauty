@@ -3,33 +3,38 @@
 		<view class="head_box margin-top">
 			<view class="cu-form-group text-xl text-bold text-brown">用户：{{orderDetail.vipName || ''}}</view>
 			<view class="cu-form-group">手机号码：{{ orderDetail.phoneNumber || "" }}</view>
-			<view class="pay-box">
+			<view class="pay-box" v-if="orderDetail.handlerType == 0">
 				<label class="x-bc pay-item">
 					<view class="x-f">
 						<image class="pay-img" src="https://i.postimg.cc/QdN88nNq/wallet-pay.png" mode=""></image>
 						<text>金额</text>
 					</view>
-					<input type="number" class="price-input text-right" v-model.trim="rechargeAmount" placeholder="请输入金额"/>
+					<input type="number" class="price-input text-right" v-model.trim="rechargeAmount"
+						placeholder="请输入金额" />
 				</label>
 			</view>
-			<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">充值套餐：</view>
+			<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">项目详情：</view>
 		</view>
 		<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
 			scroll-with-animation>
 			<view class="content_box">
 				<view class="y-f money-box">
-					<view style="clear: both;width: 100%;border-bottom: 1rpx solid #eeeeee;" v-for="(item, index) in setMeal" :key="index"
-						class="grid text-left col-2 padding">
+					<view style="clear: both;width: 100%;border-bottom: 1rpx solid #eeeeee;"
+						v-for="(item, index) in setMeal" :key="index" class="grid text-left col-2 padding">
 						<view>项目：<text class="text-orange">{{item.cosmetologyProject}}</text></view>
-						<view class="text-grey"><input type="number" class="price-input text-right" v-model.trim="item.frequency" placeholder="项目次数"/></view>
+						<view class="text-grey"><input type="number" class="price-input text-right"
+								v-model.trim="item.projectCount" placeholder="项目次数" /></view>
 					</view>
 				</view>
 			</view>
 		</scroll-view>
 		<view class="foot_box">
 			<view class="x-c">
-				<button class="cu-btn pay-btn bg-cyan" :disabled="isSubOrder" @tap="confirmPay">确认充值
+				<button class="cu-btn pay-btn bg-cyan" v-if="orderDetail.handlerType == 0" :disabled="isSubOrder"
+					@tap="confirmPay">确认充值
 					￥{{ rechargeAmount }}</button>
+				<button v-else class="cu-btn pay-btn bg-cyan" :disabled="isSubOrder" @tap="confirmAlter">确认
+				</button>
 			</view>
 		</view>
 		<!-- 登录提示 -->
@@ -85,7 +90,11 @@
 			}
 			uni.removeStorageSync('payReload');
 			// #endif
-			this.getProject();
+			if (this.orderDetail.handlerType == 0) {
+				this.getProject();
+			} else {
+				this.setMeal = JSON.parse(this.orderDetail.vipProjectCars)
+			}
 		},
 		onShow() {},
 		onHide() {
@@ -119,8 +128,8 @@
 				let that = this;
 				that.$api('bill.projectForm', {}).then(res => {
 					if (res.flag) {
-						res.data.forEach((item)=>{
-							item.frequency = 0;
+						res.data.forEach((item) => {
+							item.projectCount = 0;
 						})
 						that.setMeal = res.data;
 					}
@@ -131,27 +140,33 @@
 				let that = this;
 				if (that.rechargeAmount) {
 					let number = 0
-					that.setMeal.forEach((item)=>{
-						if(item.frequency>0){
+					let array = []
+					that.setMeal.forEach((item) => {
+						if (item.projectCount > 0) {
+							let obj = {}
+							obj.cosmetologyProject = item.cosmetologyProject
+							obj.phoneNumber = that.orderDetail.phoneNumber
+							obj.projectCount = item.projectCount
+							obj.projectId = item.id
 							number++
+							array.push(obj)
 						}
 					})
-					if(number > 0){
+					if (number > 0) {
 						this.$api('bill.increaseRecharge', {
-							custId: this.balInfo.custId,
-							qty: that.checkPrice,
-							placeId: that.storeInfo.v8PlaceId,
-							V8Url: that.storeInfo.v8Url,
-							storeId: that.storeInfo.id,
-							phoneNumber: this.userInfo.phoneNumber,
+							phoneNumber: that.orderDetail.phoneNumber,
+							rechargeAmount: that.rechargeAmount,
+							vipProjectCars: array,
 						}).then(res => {
 							if (res.flag) {
 								uni.showToast({
 									icon: 'none',
 									title: res.msg
 								})
-								that.isSubOrder = false
-								that.getUserBalance()
+								setTimeout(function() {
+									that.isSubOrder = false
+									that.$Router.back();
+								}, 2000);
 								/* that.jump('/pages/index/wallet', res.data); */
 							} else {
 								uni.showToast({
@@ -160,7 +175,7 @@
 								})
 							}
 						});
-					}else{
+					} else {
 						uni.showToast({
 							icon: 'none',
 							title: '请输入项目次数'
@@ -170,6 +185,53 @@
 					uni.showToast({
 						icon: 'none',
 						title: '请输入金额'
+					})
+				}
+			},
+			confirmAlter() {
+				let that = this;
+				let number = 0
+				let array = []
+				that.setMeal.forEach((item) => {
+					if (item.projectCount != '') {
+						let obj = {}
+						obj.cosmetologyProject = item.cosmetologyProject
+						obj.phoneNumber = that.orderDetail.phoneNumber
+						obj.projectCount = item.projectCount
+						obj.projectId = item.projectId
+						obj.id = item.id
+						array.push(obj)
+						number++
+					}
+				})
+				console.log(array)
+				if (number > 0) {
+					this.$api('bill.updateVipAndTheVipProject', {
+						phoneNumber: that.orderDetail.phoneNumber,
+						rechargeAmount: that.rechargeAmount,
+						vipProjectCars: array,
+					}).then(res => {
+						if (res.flag) {
+							uni.showToast({
+								icon: 'none',
+								title: res.msg
+							})
+							setTimeout(function() {
+								that.isSubOrder = false
+								that.$Router.back();
+							}, 2000);
+							/* that.jump('/pages/index/wallet', res.data); */
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.msg
+							})
+						}
+					});
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '请输入项目次数'
 					})
 				}
 			},
@@ -212,6 +274,7 @@
 		flex-wrap: wrap;
 		align-items: flex-start;
 		align-content: flex-start;
+
 		.money {
 			text-align: center;
 			width: 220rpx;

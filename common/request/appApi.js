@@ -139,6 +139,11 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '充值',
+		},updateVipAndTheVipProject: {
+			url: 'vipCar/updateVipAndTheVipProject',
+			auth: true,
+			method: 'POST',
+			// desc: '会员修改',
 		},playList: {
 			url: 'applet/api/playList',
 			auth: true,
