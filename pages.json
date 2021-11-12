@@ -64,7 +64,7 @@
 				"title": "电玩充值",
 				"group": "电玩"
 			}
-		},{
+		}, {
 			"path": "pages/menu/menu",
 			"name": "shoppingMall",
 			"style": {
@@ -90,7 +90,7 @@
 				"title": "商品详情",
 				"group": "卖品"
 			}
-		},{
+		}, {
 			"path": "pages/menu/pay",
 			"name": "menu",
 			"style": {
@@ -215,7 +215,7 @@
 						"auth": true,
 						"async": true
 					}
-				},{
+				}, {
 					"path": "bill",
 					"style": {
 						"navigationBarTitleText": "开单",
@@ -249,7 +249,7 @@
 					"style": {
 						"navigationBarTitleText": "定位",
 						"navigationStyle": "custom"
-					},  
+					},
 					"meta": {
 						"auth": false,
 						"async": true,
@@ -655,7 +655,7 @@
 						"navigationStyle": "custom"
 					},
 					"meta": {
-						"auth": true, 
+						"auth": true,
 						"async": true,
 						"title": "我的积分",
 						"group": "用户"
@@ -678,33 +678,33 @@
 		}
 	},
 	"tabBar": {
-		"color": "#999",
-		"selectedColor": "#999000",
-		"borderStyle": "black",
+		"color": "#333",
+		"selectedColor": "#a8700d",
 		"backgroundColor": "#ffffff",
-		"height": "50px",
-		"fontSize": "10px",
-		"iconWidth": "24px",
-		"spacing": "3px",
+		"borderStyle": "black",
+		// "height": "50px",
+		// "fontSize": "10px",
+		// "iconWidth": "24px",
+		// "spacing": "3px",
 		"list": [{
 			"pagePath": "pages/menu/menu",
-			"iconPath": "static/tabbar/_202105251003581.png",
-			"selectedIconPath": "static/tabbar/_202105251003580.png",
+			"iconPath": "static/imgs/tabbar/tab_cart.png",
+			"selectedIconPath": "static/imgs/tabbar/tab_cart_sel.png",
 			"text": "精品"
-		},{
+		}, {
 			"pagePath": "pages/index/index",
-			"iconPath": "static/tabbar/_202105251003583.png",
-			"selectedIconPath": "static/tabbar/_202105251003582.png",
+			"iconPath": "static/imgs/tabbar/tab_home.png",
+			"selectedIconPath": "/static/imgs/tabbar/tab_home_sel.png",
 			"text": "活动"
 		}, {
 			"pagePath": "pages/index/wallet",
-			"iconPath": "static/tabbar/_2021052510035862.png",
-			"selectedIconPath": "static/tabbar/_202105251003584.png",
+			"iconPath": "static/imgs/tabbar/tab_type.png",
+			"selectedIconPath": "static/imgs/tabbar/tab_type_sel.png",
 			"text": "管理"
 		}, {
 			"pagePath": "pages/index/user",
-			"iconPath": "static/tabbar/_202105251003587.png",
-			"selectedIconPath": "static/tabbar/_2021052510035861.png",
+			"iconPath": "static/imgs/tabbar/tab_my.png",
+			"selectedIconPath": "static/imgs/tabbar/tab_my_sel.png",
 			"text": "我的"
 		}]
 	}

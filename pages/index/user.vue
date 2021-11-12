@@ -20,7 +20,6 @@
 			<view class="content_box">
 				<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
 					scroll-with-animation @scrolltolower="loadMore">
-					<view class="content-box">
 						<view class="goods-list x-f">
 							<view class="goods-item" v-for="goods in vipList" @tap="handlerVip(goods)">
 								<view class="goods-box">
@@ -43,7 +42,6 @@
 						<view v-if="vipList.length" class="cu-load text-gray" :class="loadStatus"></view>
 						<!-- load -->
 						<app-load v-model="isLoading"></app-load>
-					</view>
 				</scroll-view>
 			</view>
 			<!-- 版本号 -->
@@ -224,7 +222,7 @@
 		width: 700rpx;
 		margin-top: 20rpx;
 		margin-left: 28rpx;
-		background-color: #C0C4CC;
+		background-color: #726930;
 		color: white;
 		border-radius: 10rpx;
 		overflow: hidden;

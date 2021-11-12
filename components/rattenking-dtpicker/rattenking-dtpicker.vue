@@ -213,7 +213,7 @@
 	  display: -webkit-flex;
 	  display: flex;
 	  align-items: center;
-	  padding: 0 10px;
+	  padding: 10rpx;
 	  box-sizing: border-box;
 	  border: 1px solid #aaa;
 	  border-radius: 5px;

@@ -136,17 +136,19 @@
 			},
 			//点击确定
 			okClick(){
-				var data = {},list = {},textStr = "",indexStr = "";
+				var data = {},list = {},textStr = "",valStr = "",indexStr = "";
 				this.listArrNew.forEach((item,index)=>{
 					if(item.select){
 						list[index] = item.cosmetologyProject
 						indexStr += (indexStr==""?"":",") + index
 						textStr += (textStr==""?"":",") + item.cosmetologyProject
+						valStr += (valStr==""?"":",") + item.id
 					}
 				})
 				data['list'] = list
 				data['indexStr'] = indexStr
 				data['textStr'] = textStr
+				data['valStr'] = valStr
 				data['standardPrice'] = this.standardPrice
 				data['commissionPrice'] = this.commission
 				this.$emit('click',data)

@@ -2,11 +2,11 @@
 	<view class="ci-header">
 		<view class="locate-logo">
 			<view class="tag">{{detail.dimensional || ''}}</view>
-			<image class="logo-img" :src="detail.playPosterphotos || 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'"></image>
+			<image class="logo-img" :src="detail.playPhoto || 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'"></image>
 		</view>
 		<view class="header-info">
 			<view class="text-bold text-xxl padding-top">{{detail.playName}}</view>
-			<view class="info-text text-gray">￥{{ detail.playPrice }} <text class="price text-gray" style="text-decoration:line-through">￥{{ detail.OriginalPrice }}</text></view>
+			<view class="info-text text-gray">￥{{ detail.playPrice }} <text class="price text-gray" style="text-decoration:line-through">￥{{ detail.originalPrice || detail.playPrice }}</text></view>
 			<view class="info-text text-gray"></view>
 		</view>
 	</view>

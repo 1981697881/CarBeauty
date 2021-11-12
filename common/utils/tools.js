@@ -295,12 +295,14 @@ export default {
 		let getDay = today.getDay();
 		let getHours = today.getHours();
 		let getMinutes = today.getMinutes();
+		let getSecond = today.getSeconds();
 		tMonth = this.doHandleMonth(tMonth + 1);
 		tDate = this.doHandleMonth(tDate);
 		let weeks = new Array('周日', '周一', '周二', '周三', '周四', '周五', '周六');
 		let week = weeks[getDay];
 		return {
 			day: tYear + '-' + tMonth + '-' + tDate,
+			second: tYear + '-' + tMonth + '-' + tDate +' '+ this.doHandleMonth(getHours) + ':' + this.doHandleMonth(getMinutes) + ':' + this.doHandleMonth(getSecond),
 			week: week,
 			date: tMonth + '-' + tDate,
 			HS: this.doHandleMonth(getHours) + ':' + this.doHandleMonth(getMinutes),

@@ -154,6 +154,11 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '精品套餐详情',
+		},selectRecharge: {
+			url: 'vipCar/selectRecharge',
+			auth: true,
+			method: 'POST',
+			// desc: '查询抵扣',
 		},
 	},
 	/** 同步路由 ↓ **/

@@ -16,13 +16,12 @@
 			<scroll-view scroll-y="true" enable-back-to-top @scrolltolower="loadMore" class="scroll-box">
 				<view v-if="tabCurrent != 'ing'" class="cu-bar bg-white solid-bottom" style="height: 60upx;">
 					<view class="action">
-						开始时间:
-						<ruiDatePicker fields="day" class='ruidata' start="2010-00-00" end="2030-12-30"
+						<ruiDatePicker fields="second" class='ruidata' start="2021-01-01 00:00:00" end="2030-12-30 23:59:59"
 							:value="startDate" @change="bindChange1"></ruiDatePicker>
 					</view>
+					-
 					<view class="action">
-						结束时间:
-						<ruiDatePicker fields="day" class='ruidata' start="2010-00-00" end="2030-12-30" :value="endDate"
+						<ruiDatePicker fields="second" class='ruidata' start="2021-01-01 00:00:00" end="2030-12-30 23:59:59" :value="endDate"
 							@change="bindChange2"></ruiDatePicker>
 					</view>
 				</view>
@@ -79,7 +78,7 @@
 				<app-load v-model="isLoading"></app-load>
 			</scroll-view>
 		</view>
-		<app-lmodal ref="customModal" :detail="employeeList" modalTitle="实收金额" @onClickCancel="cancel"
+		<app-lmodal ref="customModal" :detail="employeeList" modalTitle="结算" @onClickCancel="cancel"
 			@onClickConfirm="confirm"></app-lmodal>
 		<view class="foot_box"></view>
 		<!-- 自定义底部导航 -->
@@ -181,8 +180,8 @@
 				this.getGoodsList();
 			}*/
 			this.getIsUse();
-			this.startDate = this.$tools.getDayList('', -1).day;
-			this.endDate = this.$tools.getDayList('', 0).day;
+			this.startDate = this.$tools.getDayList('', -1).second;
+			this.endDate = this.$tools.getDayList('', 0).second;
 			this.getEmployeeList();
 		},
 		methods: {
@@ -227,6 +226,12 @@
 				let that = this;
 				that.payItem.employeeName = val.user.toString()
 				that.payItem.settlementPrice = val.price
+				val.orderDeductionCars.forEach((item)=>{
+					item.orderId = that.payItem.id
+					item.projectId = item.id
+					item.deductionStatus = item.projectCount > 0 ? 1:0
+				})
+				that.payItem.orderDeductionCars = val.orderDeductionCars
 				that.$api('bill.updateOrder', that.payItem).then(res => {
 					if (res.flag) {
 						that.$tools.toast(res.msg);
@@ -246,17 +251,16 @@
 				that.payItem = {
 					...item
 				};
-				let payType = ['余额', '现金', '微信', '支付宝', '其他平台']
+				let payType = ['抵扣', '现金', '微信', '支付宝', '其他平台']
 				uni.showActionSheet({
 					itemList: payType,
-			  success: function(res) {
-						console.log(res)
-						that.payItem.payType = payType[res.tapIndex],
-							that.$nextTick(function() {
-								that.$refs['customModal'].showModal()
-							})
+					success: function(res) {
+						that.payItem.payType = payType[res.tapIndex];
+						that.$nextTick(function() {
+							that.$refs['customModal'].showModal(item.cosmetologyId,item.phoneNumber,res.tapIndex)
+						})
 					},
-			  fail: function(res) {
+					fail: function(res) {
 						console.log(res.errMsg);
 					}
 				});
@@ -308,8 +312,8 @@
 				that.loadStatus = 'loading';
 				that.$api('bill.findOrdersByStatus', {
 					status: that.status,
-					endDate: that.tabCurrent == 'nostart'? that.endDate : '',
-					startDate: that.tabCurrent == 'nostart'? that.startDate : '',
+					endDate: that.tabCurrent == 'nostart' ? that.endDate : '',
+					startDate: that.tabCurrent == 'nostart' ? that.startDate : '',
 				}).then(res => {
 					if (res.flag) {
 						that.isLoading = false;

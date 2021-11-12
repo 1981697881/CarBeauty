@@ -13,7 +13,7 @@
 						placeholder="请输入金额" />
 				</label>
 			</view>
-			<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">项目详情：</view>
+			<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">购买项目：</view>
 		</view>
 		<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
 			scroll-with-animation>

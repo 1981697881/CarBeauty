@@ -89,10 +89,10 @@
 						累计消费：
 						<text class="tool-title app-selector-rect text-blue">￥ {{cumulativeAmount}}</text>
 					</view>
-					<view class="tools-item y-f">
+					<!-- <view class="tools-item y-f">
 						余额：
 						<text class="tool-title app-selector-rect text-red">￥ {{balance}}</text>
-					</view>
+					</view> -->
 				</view>
 				<view class="detail-right">
 					<view class="detail-btn-box x-ac" v-if="!goodsInfo.activity"><button class="cu-btn tool-btn pay-btn" @tap="billSave">立即开单</button></view>
@@ -141,6 +141,7 @@ export default {
 				createDate: '',
 				carNumber: '',
 				cosmetologyName: '',
+				cosmetologyId: '',
 				phoneNumber: '',
 				carModel: '五座',
 				estimatePrice: 0,
@@ -211,6 +212,7 @@ export default {
 		},
 		priceChange(data) {
 			this.form.cosmetologyName = data.textStr;
+			this.form.cosmetologyId = data.valStr;
 			this.form.estimatePrice = data.standardPrice;
 			this.form.projectCommission = data.commissionPrice;
 		},

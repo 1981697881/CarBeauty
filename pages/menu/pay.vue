@@ -5,9 +5,9 @@
 			<view class="section-2">
 				<view class="cart d-flex flex-column bg-white">
 					<view class="goods-box x-start" v-for="(item, index) in cart" :key="index" >
-						<image class="goods-img" :src="decodeURIComponent(item.ImagePath)|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" mode=""></image>
+						<image class="goods-img" :src="decodeURIComponent(item.playPhoto)|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" mode=""></image>
 						<view class="y-start">
-							<view class="goods-title more-t">{{ item.PackageName }}</view>
+							<view class="goods-title more-t">{{ item.playName }}</view>
 							<view class="action">
 							<view class="btn-group">
 								<button type="default" plain class="btn" size="mini" hover-class="none" @tap="handlePropertyReduce(item)"><view class="cuIcon-move"></view></button>
@@ -17,7 +17,7 @@
 							</view>
 							<view class="size-tip">{{ item.Note || '' }}</view>
 							<slot name="goodsBottom">
-								<view class="price">￥{{ item.PackageAmount }}</view>
+								<view class="price">￥{{ item.playPrice }}</view>
 							</slot>
 						</view>
 					</view>
@@ -140,24 +140,23 @@ export default {
 			balInfo: state => state.user.balInfo
 		}),
 		total() {
-			let that = this
-			return this.cart.reduce((acc, cur) => acc + cur.goodsCount * cur.PackageAmount, 0);
+			let that = this 
+			return this.cart.reduce((acc, cur) => acc + cur.goodsCount * cur.playPrice, 0);
 		},
 		amount() {
 			let that = this
-			return this.cart.reduce((acc, cur) => acc + cur.goodsCount * cur.PackageAmount -Number(that.couponPrice), 0);
+			return this.cart.reduce((acc, cur) => acc + cur.goodsCount * cur.playPrice -Number(that.couponPrice), 0);
 		},
 		
 	},
 	async onShow() {
 		const { query } = this.$Route;
 		this.cart = JSON.parse(query.pay)
-		this.getCoupons();
-		await this.getUserBalance();
+		/* this.getCoupons(); */
 		console.log(this.cart)
 	},
 	methods: {
-		...mapActions(['getUserBalance','getUserDetails']),
+		...mapActions(['getUserDetails']),
 		handlePropertyAdd(item) {
 			this.$set(item,'goodsCount',item.goodsCount+1)
 		},
@@ -186,8 +185,12 @@ export default {
 		},
 		combuy(){
 			let that = this
-			
-			if(that.balInfo.CustID == undefined){
+			uni.showToast({
+				icon: 'none',
+				title: '购买功能暂无上线，敬请期待',
+				duration: 2000
+			});
+			/* if(that.balInfo.CustID == undefined){
 				if (that.userInfo.phoneNumber) {
 					that.routerTo('https://server.zk2016.com/outside/web/auth/miniAuth.do?placeId=77BAF153-CDE4-466E-B394-C69240E79077&redirect_uri=/pages/user/register')
 				} else {
@@ -227,7 +230,7 @@ export default {
 				}else{
 					this.pay()
 				}
-			}
+			} */
 		},
 		// 可用优惠券
 		getCoupons() {

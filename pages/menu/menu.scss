@@ -239,9 +239,9 @@ page {
 				color: $text-color-assist;
 				position: relative;
 				
-				&:nth-last-child(1) {
+				/* &:nth-last-child(1) {
 					margin-bottom: 130rpx;
-				}
+				} */
 				
 				&.current {
 					background-color: #ffffff;
@@ -316,8 +316,10 @@ page {
 					.good {
 						display: flex;
 						align-items: center;
-						margin-bottom: 30rpx;
-
+						/* margin-bottom: 30rpx; */
+							padding-bottom: 17rpx;
+							padding-top: 17rpx;
+							border-bottom: 1rpx solid #eeeeee;
 						.image {
 							width: 160rpx;
 							height: 160rpx;

@@ -26,7 +26,7 @@
 						</view>
 					</view>
 					<view class="tab-detail pb20">
-						<view class="rich-box"><uni-parser :html="goodsInfo.BuyNote"></uni-parser></view>
+						<view class="rich-box"><uni-parser :html="goodsInfo.playTxt"></uni-parser></view>
 					</view>
 				</view>
 			</view>

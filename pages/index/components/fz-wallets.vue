@@ -1,5 +1,5 @@
 <template>
-	<view class="activity-goods-box x-bc" @tap="jump('/pages/wallet/index', { confirmationId: confirmationId })">
+	<view class="activity-goods-box x-bc">
 		<view class="img-box">
 			<slot name="tag"></slot>
 			<image class="img" :src="detail.img" mode="scaleToFill"></image>

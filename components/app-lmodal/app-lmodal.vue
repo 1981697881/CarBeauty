@@ -6,6 +6,27 @@
 			<view class="modal-body">
 				<input type="number" v-model="inputSerialNum" style="padding-left: 10rpx;font-size: 30rpx;border: 1rpx solid rgba(0, 0, 0, 0.1);" class="uni-input margin-bottom" focus placeholder="价格" />
 				<ld-select :multiple="true" :list="detail" label-key="name" value-key="name" placeholder="操作人员" clearable v-model="value" @change="selectChange"></ld-select>
+				<block v-if="type == 0">
+					<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">可抵扣：</view>
+					<view class="content_box">
+						<view class="y-f money-box">
+							<view style="clear: both;width: 100%;border-bottom: 1rpx solid #eeeeee;"
+								v-for="(item, index) in projectList" :key="index"  v-if="item.projectCount > 0" class="grid text-left col-2 padding-sm">
+								<view>项目：<text class="text-orange">{{item.cosmetologyProject}}</text></view>
+								<view class="text-grey text-right">{{item.projectCount}}</view>
+							</view>
+						</view>
+					</view>
+					<view class="cu-form-group text-bold" style="border-bottom: 1rpx solid #eeeeee;">不可抵扣：</view>
+					<view class="content_box">
+						<view class="y-f money-box">
+							<view style="clear: both;width: 100%;border-bottom: 1rpx solid #eeeeee;"
+								v-for="(item, index) in projectList" :key="index" v-if="item.projectCount == null" class="grid text-left col-1 padding-sm">
+								<view>项目：<text class="text-orange">{{item.cosmetologyProject}}</text></view>
+							</view>
+						</view>
+					</view>
+				</block>
 			</view>
 			<view>
 				<view class="btn cancel" :style="{ color: cancelTextColor }" @click="handleCancel">{{ cancelText }}</view>
@@ -64,6 +85,8 @@ export default {
 		return {
 			isShowModal: false,
 			inputSerialNum: '',
+			type: null,
+			projectList: [],
 			value: []
 		};
 	},
@@ -71,7 +94,11 @@ export default {
 		selectChange(val) {
 			this.value = val;
 		},
-		showModal() {
+		showModal(val,phone,type) {
+			this.type = type
+			if(type == 0){
+				this.getDeduction(val,phone);
+			}
 			this.isShowModal = true;
 			this.inputSerialNum= '';
 			this.value= [];
@@ -80,10 +107,18 @@ export default {
 			this.isShowModal = false;
 			this.$emit('onClickCancel', 'cancel');
 		},
+		getDeduction(val,phone){
+			let that = this;
+			that.$api('bill.selectRecharge', {phoneNumber: phone,projectIds: val.split(',')}).then(res => {
+				if (res.flag) {
+					that.projectList = res.data
+				}
+			});
+		},
 		handleConfirm() {
 			if (this.inputSerialNum.replace(/(^s*)|(s*$)/g, "").length >0 && this.value.length>0) {
 				this.isShowModal = false; 
-				this.$emit('onClickConfirm', {price: this.inputSerialNum,user: this.value});
+				this.$emit('onClickConfirm', {price: this.inputSerialNum,user: this.value,orderDeductionCars: this.projectList});
 			} else {
 				this.$tools.toast('价格和操作人员不能为空');
 			}
@@ -93,6 +128,9 @@ export default {
 </script>
 
 <style scoped>
+	.cu-form-group{
+		padding: 1rpx 20rpx;
+	}
 .masking {
 	height: 100vh;
 	width: 100vw;
@@ -108,7 +146,7 @@ export default {
 	border-radius: 16rpx;
 	position: absolute;
 	z-index: 1000;
-	top: 50%;
+	top: 20%;
 	left: 50%;
 	margin-top: -161rpx;
 	margin-left: -300rpx;

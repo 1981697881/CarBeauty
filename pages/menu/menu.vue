@@ -18,12 +18,12 @@
 									<view class="items">
 										<!-- 商品 begin  "-->
 										<view class="good" v-for="(good, key) in goods" :key="key">
-											<image @tap="jump('/pages/menu/detail', { PackageId: good.playId })" :src="good.playPosterphotos|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" class="image"></image>
+											<image @tap="jump('/pages/menu/detail', { PackageId: good.playId })" :src="good.playPhoto|| 'https://cfzx.gzfzdev.com/movie/uploadFiles/image/zanwu.jpg'" class="image"></image>
 											<view class="right">
 												<text class="name">{{good.playName}}</text>
 												<text class="tips">{{good.Note}}</text>
 												<view class="price_and_action">
-													<text class="price">￥{{ good.playPrice }} <text class="price text-gray" style="text-decoration:line-through">￥{{ good.OriginalPrice }}</text></text> 
+													<text class="price">￥{{ good.playPrice }} <text class="price text-gray" style="text-decoration:line-through">￥{{ good.originalPrice || good.playPrice }}</text></text> 
 													<view class="btn-group">
 														<button class="cu-btn cuIcon sm round shadow bg-orange" @tap="toPay(good)">
 															<text class="cuIcon-cart"></text>
@@ -381,13 +381,12 @@ export default {
 				path: '/pages/menu/pay', 
 				query: {
 					pay: JSON.stringify([{
-					packageId: good.PackageId,
-					ImagePath: good.ImagePath,
-					PackageName: good.PackageName,
-					Note: good.Note,
+					playId: good.playId,
+					playPhoto: good.playPhoto,
+					playName: good.playName,
+					Note: '',
 					goodsCount: 1,
-					PackageAmount: good.PackageAmount,
-					OriginalPrice: good.OriginalPrice,
+					playPrice: good.playPrice,
 					}])
 				}
 			});
