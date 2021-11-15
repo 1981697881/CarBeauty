@@ -17,6 +17,8 @@
 					</view>
 				</view>
 			</view>
+			<uni-fab v-if="!isUse" :pattern="pattern" :horizontal="horizontal" :vertical="vertical" :popMenu="popMenu"
+				distable :direction="direction" @fabClick="fabClick"></uni-fab>
 			<view class="content_box">
 				<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
 					scroll-with-animation @scrolltolower="loadMore">
@@ -66,6 +68,7 @@
 <script>
 	import Wechat from '@/common/wechat/wechat';
 	import shUserinfo from './components/sh-userinfo.vue';
+	import uniFab from '@/components/uni-fab/uni-fab.vue';
 	import appNoticeModal from '@/components/app-notice-modal/app-notice-modal.vue';
 	import {
 		mapMutations,
@@ -75,6 +78,7 @@
 	export default {
 		components: {
 			shUserinfo,
+			uniFab,
 			appNoticeModal
 		},
 		data() {
@@ -86,6 +90,16 @@
 				bgcolor: '',
 				listParams: {
 					phoneNumber: '',
+				},
+				horizontal: 'right',
+				vertical: 'bottom',
+				popMenu: false,
+				direction: 'horizontal',
+				pattern: {
+					color: '#7A7E83',
+					backgroundColor: '#fff',
+					selectedColor: '#FFCCCC',
+					buttonColor: '#726930'
 				},
 				isLoading: false, //loading和空白页。
 				loadStatus: '', //loading,over
@@ -201,6 +215,10 @@
 					path: path,
 					query: query
 				});
+			},
+			//新建会员
+			fabClick() {
+				this.jump('/pages/user/establish', {})
 			},
 			getbgcolor(e) {
 				this.bgcolor = e;

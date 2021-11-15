@@ -472,6 +472,17 @@
 						"title": "浏览足迹",
 						"group": "用户"
 					}
+				},{
+					"path": "establish",
+					"style": {
+						"navigationBarTitleText": "创建"
+					},
+					"meta": {
+						"auth": true,
+						"async": true,
+						"title": "新建",
+						"group": "用户"
+					}
 				},
 				{
 					"path": "sign/index",

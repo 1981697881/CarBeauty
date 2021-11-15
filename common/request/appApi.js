@@ -159,6 +159,11 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '查询抵扣',
+		},addVip: {
+			url: 'vipCar/addVip',
+			auth: true,
+			method: 'POST',
+			// desc: '查询抵扣',
 		},
 	},
 	/** 同步路由 ↓ **/
