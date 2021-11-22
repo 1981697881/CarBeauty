@@ -257,7 +257,7 @@
 					success: function(res) {
 						that.payItem.payType = payType[res.tapIndex];
 						that.$nextTick(function() {
-							that.$refs['customModal'].showModal(item.cosmetologyId,item.phoneNumber,res.tapIndex)
+							that.$refs['customModal'].showModal(item.cosmetologyId,item.vipNumber,res.tapIndex)
 						})
 					},
 					fail: function(res) {

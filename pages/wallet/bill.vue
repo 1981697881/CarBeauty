@@ -21,7 +21,7 @@
 									<text class="list-name">车牌</text>
 									<view class="x-f">
 										<input class="list-val" disabled="inputDisabled" @tap="plateShow = true"
-											v-model.trim="form.carNumber" placeholder="请输入车牌"/>
+											v-model.trim="form.carNumber" placeholder="请输入车牌" />
 										<text class="cuIcon-scan icon-size" @tap="photoRecognition"></text>
 										<plate-input v-if="plateShow" :plate="form.carNumber" @export="setPlate"
 											@close="plateShow = false" />
@@ -30,7 +30,7 @@
 								<view class="user-list x-bc">
 									<text class="list-name">手机号码</text>
 									<view class="x-f">
-										<input class="list-val" v-model="form.phoneNumber" placeholder="请输入手机号码"/>
+										<input class="list-val" v-model="form.phoneNumber" placeholder="请输入手机号码" />
 										<text class="cuIcon-phone icon-size"></text>
 									</view>
 								</view>
@@ -216,6 +216,8 @@
 													.data.carModel
 												that.form.phoneNumber = rescar
 													.data.phoneNumber
+												that.form.vipNumber = rescar
+													.data.vipNumber
 												that.balance = rescar.data
 													.balance
 												that.cumulativeAmount = rescar
@@ -261,6 +263,7 @@
 						this.goodsList = rescar.data.orderCars
 						this.form.carModel = rescar.data.carModel
 						this.form.phoneNumber = rescar.data.phoneNumber
+						this.form.vipNumber = rescar.data.vipNumber
 						this.balance = rescar.data.balance
 						this.cumulativeAmount = rescar.data.cumulativeAmount
 					}

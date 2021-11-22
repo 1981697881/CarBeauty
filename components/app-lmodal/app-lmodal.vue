@@ -94,10 +94,10 @@ export default {
 		selectChange(val) {
 			this.value = val;
 		},
-		showModal(val,phone,type) {
+		showModal(val,vipNumber,type) {
 			this.type = type
 			if(type == 0){
-				this.getDeduction(val,phone);
+				this.getDeduction(val,vipNumber);
 			}
 			this.isShowModal = true;
 			this.inputSerialNum= '';
@@ -107,9 +107,9 @@ export default {
 			this.isShowModal = false;
 			this.$emit('onClickCancel', 'cancel');
 		},
-		getDeduction(val,phone){
+		getDeduction(val,vipNumber){
 			let that = this;
-			that.$api('bill.selectRecharge', {phoneNumber: phone,projectIds: val.split(',')}).then(res => {
+			that.$api('bill.selectRecharge', {vipNumber: vipNumber,projectIds: val.split(',')}).then(res => {
 				if (res.flag) {
 					that.projectList = res.data
 				}

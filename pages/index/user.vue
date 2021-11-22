@@ -28,12 +28,11 @@
 									<view class="content-box">
 										<view class="cont-tier flex flex-wrap justify-between">
 											<view class="tier-left">
-												<view class="">会员名称：{{goods.vipName}}</view>
-												<view class="cent-tip">会员手机：{{goods.phoneNumber}}</view>
+												<view class="">会员卡号：{{goods.vipNumber}}</view>
+												<view class="cent-tip">会员名称：{{goods.vipName}}</view>
 											</view>
 											<view class="tier-center">
-												<view class="">车型：{{goods.carModel}}</view>
-												<view class="cent-tip">车牌号：{{goods.carNumber}}</view>
+												<view class="">手机号码：{{goods.phoneNumber}}</view>
 											</view>
 										</view>
 									</view>
@@ -157,25 +156,36 @@
 			},
 			handlerVip(goods) {
 				let that = this;
-				let handlerType = ['充值', '修改']
+				let handlerType = ['充值', '修改充值信息','修改用户信息']
 				uni.showActionSheet({
 					itemList: handlerType,
 					success: function(res) {
-						that.jump('/pages/user/wallet/recharge', {
-							vipName: goods.vipName,
-							phoneNumber: goods.phoneNumber,
-							carModel: goods.carModel,
-							carNumber: goods.carNumber,
-							handlerType: res.tapIndex,
-							vipProjectCars: JSON.stringify(goods.vipProjectCars),
-							id: goods.id
-						})
+						if(res.tapIndex == 2){
+							that.jump('/pages/user/establish', {
+								vipName: goods.vipName,
+								phoneNumber: goods.phoneNumber,
+								carModel: goods.carModel,
+								carNumber: goods.carNumber,
+								handlerType: res.tapIndex,
+								vipProjectCars: JSON.stringify(goods.vipProjectCars),
+								id: goods.id
+							})
+						}else{
+							that.jump('/pages/user/wallet/recharge', {
+								vipName: goods.vipName,
+								phoneNumber: goods.phoneNumber,
+								carModel: goods.carModel,
+								carNumber: goods.carNumber,
+								handlerType: res.tapIndex,
+								vipProjectCars: JSON.stringify(goods.vipProjectCars),
+								id: goods.id
+							})
+						}
 					},
 					fail: function(res) {
 						console.log(res.errMsg);
 					}
 				});
-				
 			},
 			search() {
 				this.getVipList();
