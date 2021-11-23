@@ -475,7 +475,7 @@
 				},{
 					"path": "establish",
 					"style": {
-						"navigationBarTitleText": "创建"
+						"navigationBarTitleText": "会员信息"	
 					},
 					"meta": {
 						"auth": true,

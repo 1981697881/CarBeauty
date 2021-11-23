@@ -2,7 +2,7 @@
 	<view class="activity-goods-box x-bc">
 		<view class="img-box">
 			<slot name="tag"></slot>
-			<image class="img" :src="detail.img" mode="scaleToFill"></image>
+			<image class="img" :src="detail.carPhoto" mode="scaleToFill"></image>
 		</view>
 		<view class="goods-right y-bc">
 			<view class="title one-t padding-top">车牌：{{ detail.carNumber }}</view>

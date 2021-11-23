@@ -165,8 +165,7 @@
 								vipName: goods.vipName,
 								vipNumber: goods.vipNumber,
 								phoneNumber: goods.phoneNumber,
-								carModel: goods.carModel,
-								carNumber: goods.carNumber,
+								
 								handlerType: res.tapIndex,
 								vipCarmessageCars: JSON.stringify(goods.vipCarmessageCars),
 								id: goods.id
@@ -176,8 +175,6 @@
 								vipName: goods.vipName,
 								vipNumber: goods.vipNumber,
 								phoneNumber: goods.phoneNumber,
-								carModel: goods.carModel,
-								carNumber: goods.carNumber,
 								handlerType: res.tapIndex,
 								vipProjectCars: JSON.stringify(goods.vipProjectCars),
 								id: goods.id

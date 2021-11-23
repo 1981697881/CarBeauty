@@ -5,10 +5,17 @@
 				<view class="goods-size">
 					<view class="goodes_detail_swiper-box">
 						<view class="user-list x-bc">
+							<text class="list-name">会员号</text>
+							<view class="x-f">
+								<input class="list-val" v-model="form.vipNumber" placeholder="请输入会员号" />
+								<text class="cuIcon-card icon-size"></text>
+							</view>
+						</view>
+						<view class="user-list x-bc">
 							<text class="list-name">名称</text>
 							<view class="x-f">
 								<input class="list-val" v-model="form.vipName" placeholder="请输入会员名称" />
-								<text class="cuIcon-phone icon-size"></text>
+								<text class="cuIcon-profile icon-size"></text>
 							</view>
 						</view>
 						<view class="user-list x-bc">
@@ -18,7 +25,6 @@
 								<text class="cuIcon-phone icon-size"></text>
 							</view>
 						</view>
-
 						<!-- 分页器start -->
 						<cell-box style="margin-top: 30rpx;" v-if="form.vipCarmessageCars.length>0">
 							<template slot="value">
@@ -114,9 +120,8 @@
 				confirmGoodsInfo: {},
 				form: {
 					vipName: '',
-					carNumber: '',
+					vipNumber: '',
 					phoneNumber: '',
-					carModel: '五座',
 					vipCarmessageCars: []
 				},
 				plateNo: '',
@@ -126,9 +131,11 @@
 		},
 		computed: {},
 		onLoad() {
-			this.form = this.$Route.query
-			console.log(this.form)
-			this.form.vipCarmessageCars = JSON.parse(this.form.vipCarmessageCars)
+			if(this.$Route.query.vipCarmessageCars){
+				console.log(123)
+				this.form = this.$Route.query
+				this.form.vipCarmessageCars = JSON.parse(this.form.vipCarmessageCars)
+			}
 			this.getProject();
 		},
 		onUnload(options) {
@@ -138,13 +145,16 @@
 		methods: {
 			// 追加
 			add() {
-				// 不用深拷贝的话，添加2个数据以上就会无限复制第二条数据
-				this.form.vipCarmessageCars.push({
-					carModel: '五座',
-					carNumber: '',
-					vipNumber: this.form.vipNumber
-				})
-				this.currentPage = this.form.vipCarmessageCars.length - 1
+				if(this.form.vipNumber){
+					this.form.vipCarmessageCars.push({
+						carModel: '五座',
+						carNumber: '',
+						vipNumber: this.form.vipNumber
+					})
+					this.currentPage = this.form.vipCarmessageCars.length - 1
+				}else{
+					return this.$tools.toast('请输入会员号');
+				}
 			},
 			delItem(index, item) {
 				let that = this;
@@ -222,26 +232,26 @@
 			},
 			billSave() {
 				let that = this;
+				if (!that.form.vipNumber) {
+					return that.$tools.toast('请录入会员号');
+				}
 				if (!that.form.vipName) {
 					return that.$tools.toast('请输入会员名称');
 				}
 				if (!that.form.phoneNumber) {
 					return that.$tools.toast('请输入会员手机号码');
 				}
-				if (!that.form.carModel) {
-					return that.$tools.toast('选择会员车型');
-				}
-				if (!that.form.carNumber) {
-					return that.$tools.toast('请录入车牌');
+				if (that.form.vipCarmessageCars.length == 0) {
+					return that.$tools.toast('车辆信息不能为空');
 				}
 				that.$api('bill.addVip', that.form).then(res => {
 					if (res.flag) {
 						that.$tools.toast(res.msg);
+						that.$Router.back();
 					} else {
-						that.$tools.toast(res.msg);
+						that.$tools.toast(res.message);
 					}
 				});
-				that.$Router.back();
 			},
 			// 获取项目
 			getProject() {
