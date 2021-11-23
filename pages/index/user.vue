@@ -163,16 +163,18 @@
 						if(res.tapIndex == 2){
 							that.jump('/pages/user/establish', {
 								vipName: goods.vipName,
+								vipNumber: goods.vipNumber,
 								phoneNumber: goods.phoneNumber,
 								carModel: goods.carModel,
 								carNumber: goods.carNumber,
 								handlerType: res.tapIndex,
-								vipProjectCars: JSON.stringify(goods.vipProjectCars),
+								vipCarmessageCars: JSON.stringify(goods.vipCarmessageCars),
 								id: goods.id
 							})
 						}else{
 							that.jump('/pages/user/wallet/recharge', {
 								vipName: goods.vipName,
+								vipNumber: goods.vipNumber,
 								phoneNumber: goods.phoneNumber,
 								carModel: goods.carModel,
 								carNumber: goods.carNumber,
