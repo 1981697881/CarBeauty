@@ -10,7 +10,7 @@
 					<view class="search-form round">
 						<text class="cuIcon-search"></text>
 						<input :adjust-position="false" type="text" v-model.trim="listParams.phoneNumber"
-							placeholder="搜索会员，手机号码或车牌号" confirm-type="search"></input>
+							placeholder="搜索会员，手机号码" confirm-type="search"></input>
 					</view>
 					<view class="action">
 						<button class="cu-btn bg-green shadow-blur round" @tap="search">搜索</button>
@@ -20,29 +20,56 @@
 			<uni-fab v-if="!isUse" :pattern="pattern" :horizontal="horizontal" :vertical="vertical" :popMenu="popMenu"
 				distable :direction="direction" @fabClick="fabClick"></uni-fab>
 			<view class="content_box">
-				<scroll-view :style="{ height: hHeight + 'px' }" class="scroll-box bg-white" scroll-y enable-back-to-top
+				<scroll-view :style="{ height:  '820rpx' }" class="scroll-box bg-white" scroll-y enable-back-to-top
 					scroll-with-animation @scrolltolower="loadMore">
-						<view class="goods-list x-f">
-							<view class="goods-item" v-for="goods in vipList" @tap="handlerVip(goods)">
-								<view class="goods-box">
-									<view class="content-box">
-										<view class="cont-tier flex flex-wrap justify-between">
-											<view class="tier-left">
-												<view class="">会员卡号：{{goods.vipNumber}}</view>
-												<view class="cent-tip">会员名称：{{goods.vipName}}</view>
-											</view>
-											<view class="tier-center">
-												<view class="">手机号码：{{goods.phoneNumber}}</view>
-											</view>
+					<view class="goods-list x-f">
+						<view class="goods-item" v-for="goods in vipList" @tap="handlerVip(goods)">
+							<view class="goods-box">
+								<view class="content-box">
+									<view class="cont-tier flex flex-wrap justify-between">
+										<view class="tier-left">
+											<view class="">会员卡号：{{goods.vipNumber}}</view>
+											<view class="cent-tip">会员名称：{{goods.vipName}}</view>
+											<view class="">充值记录<text class="icon-size"
+													:class="goods.queryPackage?'cuIcon-fold':'cuIcon-unfold'"
+													@tap.stop="queryPackage(goods)"></text></view>
+										</view>
+										<view class="tier-center">
+											<view class="">手机号码：{{goods.phoneNumber}}</view>
+											<view class="">车辆数量：{{goods.vipCarmessageCars.length}}</view>
+											<view class="">消费记录<text class="icon-size"
+													:class="goods.queryConsumption?'cuIcon-fold':'cuIcon-unfold'"
+													@tap.stop="queryConsumption(goods)"></text></view>
 										</view>
 									</view>
 								</view>
+								<view class="content-item" :class="goods.queryPackage?'item-click':''">
+									<block v-for="(item,index) in goods.rechargeList" :key='index'>
+										<view class="cont-tier flex flex-wrap justify-between">
+											<view class="tier-left">
+												<view class="">({{index+1}}) 充值时间：{{item.createDate}}</view>
+												<view class="cent-tip">充值金额：￥{{item.rechargeAmount}}</view>
+											</view>
+										</view>
+									</block>
+								</view>
+								<view class="content-item" :class="goods.queryConsumption?'item-click':''">
+									<block v-for="(item,index) in goods.consumptionList" :key='index'>
+										<view class="cont-tier flex flex-wrap justify-between">
+											<view class="tier-left">
+												<view class="">({{index+1}}) 消费时间：{{item.createDate}}</view>
+												<view class="cent-tip">消费项目：{{item.cosmetologyName}}</view>
+											</view>
+										</view>
+									</block>
+								</view>
 							</view>
 						</view>
-						<!-- 加载更多 -->
-						<view v-if="vipList.length" class="cu-load text-gray" :class="loadStatus"></view>
-						<!-- load -->
-						<app-load v-model="isLoading"></app-load>
+					</view>
+					<!-- 加载更多 -->
+					<view v-if="vipList.length" class="cu-load text-gray" :class="loadStatus"></view>
+					<!-- load -->
+					<app-load v-model="isLoading"></app-load>
 				</scroll-view>
 			</view>
 			<!-- 版本号 -->
@@ -132,7 +159,7 @@
 			/* this.$store.commit('CART_NUM'); */
 			this.init();
 			this.getScrHeight();
-			this.getVipList();	
+			this.getVipList();
 		},
 		methods: {
 			...mapActions(['getUserDetails']),
@@ -147,6 +174,66 @@
 						uni.stopPullDownRefresh();
 					});
 			},
+			queryPackage(item) {
+				let that = this;
+				if (item.queryPackage) {
+					item.queryPackage = false
+				} else {
+					uni.showLoading({
+						title: 'Loading....'
+					});
+					that.$api('bill.rechargeList', {
+						phoneNumber: item.vipNumber
+					}).then(res => {
+						if (res.flag) {
+							item.queryConsumption = false
+							item.rechargeList = res.data
+							uni.hideLoading();
+							if(item.rechargeList.length>0){
+								item.queryPackage = true
+							}else{
+								uni.showToast({
+									title: '无充值记录',
+									mask: true,
+									icon: 'none',
+									duration: 1500
+								});
+							}
+						}
+					});
+					
+				}
+			},
+			queryConsumption(item) {
+				let that = this;
+				if (item.queryConsumption) {
+					item.queryConsumption = false
+				} else {
+					uni.showLoading({
+						title: 'Loading....'
+					});
+					that.$api('bill.recordHistory', {
+						vipNumber: item.vipNumber
+					}).then(res => {
+						if (res.flag) {
+							item.queryConsumption = true
+							item.consumptionList = res.data
+							uni.hideLoading();
+							if(item.consumptionList.length>0){
+								item.queryPackage = false
+							}else{
+								uni.showToast({
+									title: '无消费记录',
+									mask: true,
+									icon: 'none',
+									duration: 1500
+								});
+							}
+						}
+					});
+					
+				}
+			},
 			// 加载更多
 			loadMore() {
 				if (this.listParams.page < this.lastPage) {
@@ -156,21 +243,20 @@
 			},
 			handlerVip(goods) {
 				let that = this;
-				let handlerType = ['充值', '修改充值信息','修改用户信息']
+				let handlerType = ['充值', '修改充值信息', '修改用户信息']
 				uni.showActionSheet({
 					itemList: handlerType,
 					success: function(res) {
-						if(res.tapIndex == 2){
+						if (res.tapIndex == 2) {
 							that.jump('/pages/user/establish', {
 								vipName: goods.vipName,
 								vipNumber: goods.vipNumber,
 								phoneNumber: goods.phoneNumber,
-								
 								handlerType: res.tapIndex,
 								vipCarmessageCars: JSON.stringify(goods.vipCarmessageCars),
 								id: goods.id
 							})
-						}else{
+						} else {
 							that.jump('/pages/user/wallet/recharge', {
 								vipName: goods.vipName,
 								vipNumber: goods.vipNumber,
@@ -196,6 +282,12 @@
 				that.$api('bill.selectVipList', this.listParams).then(res => {
 					if (res.flag) {
 						that.isLoading = false;
+						res.data.forEach((item) => {
+							item.queryPackage = false;
+							item.queryConsumption = false;
+							item.rechargeList = [];
+							item.consumptionList = [];
+						})
 						that.vipList = res.data;
 						that.lastPage = res.data.last_page;
 						if (that.listParams.page < res.data.last_page) {
@@ -245,13 +337,31 @@
 		}
 	}
 
+	.content-item {
+		width: 100%;
+		max-height: 0;
+		transition: max-height .3s;
+		padding: 0 30rpx 00rpx 30rpx;
+	}
+	.content-itemt {
+		width: 100%;
+		max-height: 0;
+		transition: max-height .3s;
+		padding: 0 30rpx 00rpx 30rpx;
+	}
+	.item-click {
+		min-height: 200rpx;
+		overflow-y: auto;
+		padding-top: 20rpx;
+		padding-bottom: 20rpx;
+	}
 	.goods-box {
 		width: 700rpx;
 		margin-top: 20rpx;
+		background: linear-gradient(90deg, rgba(13, 120, 97, 1), rgba(138, 14, 137, 0.5), rgba(200, 170, 10, 0.7));
 		margin-left: 28rpx;
-		background-color: #726930;
 		color: white;
-		border-radius: 10rpx;
+		border-radius: 10rpx 10rpx 0 0;
 		overflow: hidden;
 
 		.content-box {
@@ -260,7 +370,7 @@
 			overflow: hidden;
 			position: relative;
 			padding: 30rpx;
-
+			border-bottom: 1rpx solid white;
 			.cont-tier {
 				.tier-left {}
 

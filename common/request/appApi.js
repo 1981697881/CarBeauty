@@ -164,6 +164,16 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '查询抵扣',
+		},rechargeList: {
+			url: 'logsRecharge/rechargeList',
+			auth: true,
+			method: 'POST',
+			// desc: '充值记录',
+		},recordHistory: {
+			url: 'vipCar/recordHistory',
+			auth: true,
+			method: 'POST',
+			// desc: '历史消费',
 		},
 	},
 	/** 同步路由 ↓ **/

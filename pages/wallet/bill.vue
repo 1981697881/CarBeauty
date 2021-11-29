@@ -22,7 +22,9 @@
 									<view class="x-f">
 										<input class="list-val" disabled="inputDisabled" @tap="plateShow = true"
 											v-model.trim="form.carNumber" placeholder="请输入车牌" />
-										<text class="cuIcon-scan icon-size" @tap="photoRecognition"></text>
+										<ocr-navigator @onSuccess="platenumSuccess"  certificateType="platenum">
+										  <text class="cuIcon-scan icon-size"></text>
+										</ocr-navigator>
 										<plate-input v-if="plateShow" :plate="form.carNumber" @export="setPlate"
 											@close="plateShow = false" />
 									</view>
@@ -78,8 +80,8 @@
 							<scroll-view :style="{ height: 950 + 'rpx' }" class="scroll-box" scroll-y enable-back-to-top
 								scroll-with-animation @scrolltolower="loadMore">
 								<view class="content-box">
-									<view class="goods-list x-f">
-										<view class="goods-item" v-for="goods in goodsList" :key="goods.id">
+									<view class="goods-list">
+										<view class="goods-item" v-for="(goods,index) in goodsList" :key="index">
 											<fz-circuit-card :detail="goods" :isTag="true"></fz-circuit-card>
 										</view>
 									</view>
@@ -189,6 +191,9 @@
 		},
 		onReady() {},
 		methods: {
+			platenumSuccess(val){
+				this.form.carNumber = val.target.number.text;
+			},
 			photoRecognition() {
 				let that = this;
 				uni.chooseImage({
@@ -261,6 +266,7 @@
 				}).then(rescar => {
 					if (rescar.flag) {
 						this.goodsList = rescar.data.orderCars
+						console.log(this.goodsList)
 						this.form.carModel = rescar.data.carModel
 						this.form.phoneNumber = rescar.data.phoneNumber
 						this.form.vipNumber = rescar.data.vipNumber

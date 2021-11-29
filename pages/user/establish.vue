@@ -47,7 +47,9 @@
 								<view class="x-f">
 									<input class="list-val" disabled="inputDisabled" @tap="plateShow = true"
 										v-model.trim="item.carNumber" placeholder="请输入会员车牌" />
-									<text class="cuIcon-scan icon-size" @tap="photoRecognition"></text>
+									<ocr-navigator @onSuccess="platenumSuccess($event,item)"  certificateType="platenum">
+									  <text class="cuIcon-scan icon-size"></text>
+									</ocr-navigator>
 									<plate-input v-if="plateShow" :plate="item.carNumber"
 										@export="setPlate($event,item)" @close="plateShow = false" />
 								</view>
@@ -143,6 +145,10 @@
 		},
 		onReady() {},
 		methods: {
+			platenumSuccess(val,item){
+				item.carNumber = val.target.number.text;
+				console.log(val)
+			},
 			// 追加
 			add() {
 				if(this.form.vipNumber){
@@ -186,7 +192,7 @@
 				}
 				console.log(typeof this[pageKey])
 			},
-			photoRecognition() {
+			photoRecognition(item) {
 				let that = this;
 				uni.chooseImage({
 					count: 1,
@@ -200,7 +206,7 @@
 									url: uploadFileRes
 								}).then(reso => {
 									if (reso.flag) {
-										that.form.carNumber = reso.data.result[0]
+										item.carNumber = reso.data.result[0]
 											.plate_number;
 									}
 								});
@@ -270,7 +276,6 @@
 	.icon-size {
 		font-size: 50rpx !important;
 	}
-
 	.project-tier {
 		width: 500rpx;
 		overflow: hidden;

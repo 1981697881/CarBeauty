@@ -179,7 +179,12 @@
         "optimization" : {
             "subPackages" : true //开启小程序分包优化。
         },
-        "plugins" : {},
+        "plugins" : {
+			 "ocr-plugin": {
+			      "version": "3.1.1",
+			      "provider": "wx4418e3e031e551be"
+			    }
+		},
         // "live-player-plugin": {
         // 	//这段代码，需要放到plugins中。
         // 	//只有后台开通小程序直播功能权限，才可以打开，不然报错，程序无法运行。

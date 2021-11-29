@@ -146,6 +146,7 @@
 							let obj = {}
 							obj.cosmetologyProject = item.cosmetologyProject
 							obj.phoneNumber = that.orderDetail.phoneNumber
+							obj.vipNumber = that.orderDetail.vipNumber
 							obj.projectCount = item.projectCount
 							obj.projectId = item.id
 							number++
@@ -156,6 +157,7 @@
 						this.$api('bill.increaseRecharge', {
 							phoneNumber: that.orderDetail.phoneNumber,
 							rechargeAmount: that.rechargeAmount,
+							vipNumber: that.orderDetail.vipNumber,
 							vipProjectCars: array,
 						}).then(res => {
 							if (res.flag) {
@@ -197,6 +199,7 @@
 						let obj = {}
 						obj.cosmetologyProject = item.cosmetologyProject
 						obj.phoneNumber = that.orderDetail.phoneNumber
+						obj.vipNumber = that.orderDetail.vipNumber
 						obj.projectCount = item.projectCount
 						obj.projectId = item.projectId
 						obj.id = item.id
@@ -204,10 +207,10 @@
 						number++
 					}
 				})
-				console.log(array)
 				if (number > 0) {
 					this.$api('bill.updateVipAndTheVipProject', {
 						phoneNumber: that.orderDetail.phoneNumber,
+						vipNumber: that.orderDetail.vipNumber,
 						rechargeAmount: that.rechargeAmount,
 						vipProjectCars: array,
 					}).then(res => {

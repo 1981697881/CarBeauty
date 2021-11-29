@@ -686,6 +686,9 @@
 		"SplitLineStyles": {
 			"color": "#ccc",
 			"height": "1px"
+		},
+		"usingComponents": {
+		    "ocr-navigator": "plugin://ocr-plugin/ocr-navigator"
 		}
 	},
 	"tabBar": {
