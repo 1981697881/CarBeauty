@@ -78,7 +78,7 @@
 				<app-load v-model="isLoading"></app-load>
 			</scroll-view>
 		</view>
-		<app-lmodal ref="customModal" :detail="employeeList" modalTitle="结算" @onClickCancel="cancel"
+		<app-lmodal ref="customModal" :detail="employeeList" :platformsList="platformsList" modalTitle="结算" @onClickCancel="cancel"
 			@onClickConfirm="confirm"></app-lmodal>
 		<view class="foot_box"></view>
 		<!-- 自定义底部导航 -->
@@ -134,8 +134,8 @@
 				cumulativeAmount: 0,
 				tabCurrent: 'ing',
 				goodsList: [],
-				employeeList: [],
 				platformsList: [],
+				employeeList: [],
 				payItem: {},
 				loading: false,
 				payType: null,
@@ -236,6 +236,7 @@
 				let that = this;
 				that.payItem.employeeName = val.user.toString()
 				that.payItem.settlementPrice = val.price
+				that.payItem.payType = val.payType
 				val.orderDeductionCars.forEach((item)=>{
 					item.orderId = that.payItem.id
 					item.projectId = item.id
@@ -261,7 +262,10 @@
 				that.payItem = {
 					...item
 				};
-				let payType = []
+				that.$nextTick(function() {
+					that.$refs['customModal'].showModal(item.cosmetologyId,item.vipNumber)
+				})
+				/* let payType = []
 				that.platformsList.forEach((item)=>{
 					payType.push(item.platformName)
 				})
@@ -277,7 +281,7 @@
 					fail: function(res) {
 						console.log(res.errMsg);
 					}
-				});
+				}); */
 			},
 			//开单
 			fabClick() {
