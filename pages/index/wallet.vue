@@ -135,6 +135,7 @@
 				tabCurrent: 'ing',
 				goodsList: [],
 				employeeList: [],
+				platformsList: [],
 				payItem: {},
 				loading: false,
 				payType: null,
@@ -183,6 +184,7 @@
 			this.startDate = this.$tools.getDayList('', -1).second;
 			this.endDate = this.$tools.getDayList('', 0).second;
 			this.getEmployeeList();
+			this.getPayPlatformsList();
 		},
 		methods: {
 			...mapActions(['getUserDetails']),
@@ -210,6 +212,14 @@
 				that.$api('bill.employeeList', {}).then(res => {
 					if (res.flag) {
 						that.employeeList = res.data
+					}
+				});
+			}, 
+			getPayPlatformsList() {
+				let that = this;
+				that.$api('bill.payPlatforms', {}).then(res => {
+					if (res.flag) {
+						that.platformsList = res.data
 					}
 				});
 			},
@@ -251,7 +261,11 @@
 				that.payItem = {
 					...item
 				};
-				let payType = ['抵扣', '现金', '微信', '支付宝', '其他平台']
+				let payType = []
+				that.platformsList.forEach((item)=>{
+					payType.push(item.platformName)
+				})
+				console.log(payType)
 				uni.showActionSheet({
 					itemList: payType,
 					success: function(res) {

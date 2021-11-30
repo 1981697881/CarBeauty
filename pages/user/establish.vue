@@ -65,6 +65,13 @@
 								</view>
 							</picker>
 							<view class="user-list x-bc">
+								<text class="list-name">品牌</text>
+								<view class="x-f">
+									<input class="list-val" v-model="item.carBrand" />
+									<text class="cuIcon-deliver icon-size"></text>
+								</view>
+							</view>
+							<view class="user-list x-bc">
 								<text class="list-name">操作</text>
 								<view class="x-f">
 									<button class="cu-btn round line-red shadow"
@@ -154,6 +161,7 @@
 				if(this.form.vipNumber){
 					this.form.vipCarmessageCars.push({
 						carModel: '五座',
+						carBrand: '',
 						carNumber: '',
 						vipNumber: this.form.vipNumber
 					})

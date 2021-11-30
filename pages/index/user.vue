@@ -43,7 +43,7 @@
 										</view>
 									</view>
 								</view>
-								<view class="content-item" :class="goods.queryPackage?'item-click':''">
+								<view class="content-item" v-if="goods.queryPackage">
 									<block v-for="(item,index) in goods.rechargeList" :key='index'>
 										<view class="cont-tier flex flex-wrap justify-between">
 											<view class="tier-left">
@@ -53,12 +53,13 @@
 										</view>
 									</block>
 								</view>
-								<view class="content-item" :class="goods.queryConsumption?'item-click':''">
+								<view class="content-item" v-if="goods.queryConsumption">
 									<block v-for="(item,index) in goods.consumptionList" :key='index'>
 										<view class="cont-tier flex flex-wrap justify-between">
 											<view class="tier-left">
 												<view class="">({{index+1}}) 消费时间：{{item.createDate}}</view>
 												<view class="cent-tip">消费项目：{{item.cosmetologyName}}</view>
+												<view class="cent-tip">金额：{{item.settlementPrice}}</view>
 											</view>
 										</view>
 									</block>
@@ -216,11 +217,11 @@
 						vipNumber: item.vipNumber
 					}).then(res => {
 						if (res.flag) {
-							item.queryConsumption = true
+							item.queryPackage = false
 							item.consumptionList = res.data
 							uni.hideLoading();
 							if(item.consumptionList.length>0){
-								item.queryPackage = false
+								item.queryConsumption = true
 							}else{
 								uni.showToast({
 									title: '无消费记录',
@@ -331,7 +332,6 @@
 <style lang="scss">
 	.goods-list {
 		flex-wrap: wrap;
-
 		.goods-item {
 			width: 100%;
 		}
@@ -339,9 +339,10 @@
 
 	.content-item {
 		width: 100%;
-		max-height: 0;
+		max-height: 200rpx;
+		overflow-y: auto;
 		transition: max-height .3s;
-		padding: 0 30rpx 00rpx 30rpx;
+		padding: 20rpx 30rpx 20rpx 30rpx;
 	}
 	.content-itemt {
 		width: 100%;
@@ -350,6 +351,12 @@
 		padding: 0 30rpx 00rpx 30rpx;
 	}
 	.item-click {
+		min-height: 200rpx;
+		overflow-y: auto;
+		padding-top: 20rpx;
+		padding-bottom: 20rpx;
+	}
+	.item-clickt {
 		min-height: 200rpx;
 		overflow-y: auto;
 		padding-top: 20rpx;

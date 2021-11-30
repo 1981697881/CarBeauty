@@ -174,6 +174,11 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '历史消费',
+		},payPlatforms: {
+			url: 'payPlatform/payPlatforms',
+			auth: true,
+			method: 'POST',
+			// desc: '付款平台',
 		},
 	},
 	/** 同步路由 ↓ **/

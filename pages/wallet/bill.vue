@@ -22,8 +22,8 @@
 									<view class="x-f">
 										<input class="list-val" disabled="inputDisabled" @tap="plateShow = true"
 											v-model.trim="form.carNumber" placeholder="请输入车牌" />
-										<ocr-navigator @onSuccess="platenumSuccess"  certificateType="platenum">
-										  <text class="cuIcon-scan icon-size"></text>
+										<ocr-navigator @onSuccess="platenumSuccess" certificateType="platenum">
+											<text class="cuIcon-scan icon-size"></text>
 										</ocr-navigator>
 										<plate-input v-if="plateShow" :plate="form.carNumber" @export="setPlate"
 											@close="plateShow = false" />
@@ -55,6 +55,13 @@
 										</view>
 									</view>
 								</picker>
+								<view class="user-list x-bc">
+									<text class="list-name">品牌</text>
+									<view class="x-f">
+										<input class="list-val" v-model="form.carBrand" />
+										<text class="cuIcon-deliver icon-size"></text>
+									</view>
+								</view>
 								<view class="user-list x-bc">
 									<text class="list-name">美容项目</text>
 									<jsfun-picker :listArr="priceList" :defaultArr="form.cosmetologyName"
@@ -160,6 +167,7 @@
 					cosmetologyName: '',
 					cosmetologyId: '',
 					phoneNumber: '',
+					carBrand: '',
 					carModel: '五座',
 					estimatePrice: 0,
 					projectCommission: 0
@@ -191,7 +199,7 @@
 		},
 		onReady() {},
 		methods: {
-			platenumSuccess(val){
+			platenumSuccess(val) {
 				this.form.carNumber = val.target.number.text;
 			},
 			photoRecognition() {
@@ -221,6 +229,8 @@
 													.data.carModel
 												that.form.phoneNumber = rescar
 													.data.phoneNumber
+												that.form.carBrand = rescar
+													.data.carBrand
 												that.form.vipNumber = rescar
 													.data.vipNumber
 												that.balance = rescar.data
@@ -266,9 +276,9 @@
 				}).then(rescar => {
 					if (rescar.flag) {
 						this.goodsList = rescar.data.orderCars
-						console.log(this.goodsList)
 						this.form.carModel = rescar.data.carModel
 						this.form.phoneNumber = rescar.data.phoneNumber
+						this.form.carBrand = rescar.data.carBrand
 						this.form.vipNumber = rescar.data.vipNumber
 						this.balance = rescar.data.balance
 						this.cumulativeAmount = rescar.data.cumulativeAmount
