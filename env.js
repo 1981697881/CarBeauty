@@ -8,8 +8,8 @@ import store from '@/common/store/index'
 let protocol = window.location.protocol;
 // #endif
 const ENV_BASE_URL = {
-	development: 'https://zhongyao.gzfzdev.com/cleancar', //开发环境
-	production: 'https://zhongyao.gzfzdev.com/cleancar', //生产环境
+	development: 'https://cb.gzfzdev.com/cleancar', //开发环境
+	production: 'https://cb.gzfzdev.com/cleancar', //生产环境
 }
 // /addons/shopro
 const ENV_API_URL = {

@@ -201,6 +201,20 @@
 		methods: {
 			platenumSuccess(val) {
 				this.form.carNumber = val.target.number.text;
+				this.$api('bill.findOrdersByStatus', {
+					carNumber: this.form.carNumber,
+					status: '1'
+				}).then(rescar => {
+					if (rescar.flag) {
+						this.goodsList = rescar.data.orderCars
+						this.form.carModel = rescar.data.carModel
+						this.form.phoneNumber = rescar.data.phoneNumber
+						this.form.carBrand = rescar.data.carBrand
+						this.form.vipNumber = rescar.data.vipNumber
+						this.balance = rescar.data.balance
+						this.cumulativeAmount = rescar.data.cumulativeAmount
+					}
+				});
 			},
 			photoRecognition() {
 				let that = this;

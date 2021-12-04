@@ -27,11 +27,16 @@
 				</view>
 				<view class="goods-item" v-for="item in goodsList" :key="item.id">
 					<wallet-list :detail="item" v-if="tabCurrent == 'ing'">
+						<block slot="item-close">
+							<view class="item-close" @tap.stop="delItem(item)">
+								<image class="img" src="../../static/imgs/user/close.png" mode="scaleToFill"></image>
+							</view>
+						</block> 
 						<block slot="sell">
 							<view class="x-f">
 								<view>预估费用：￥{{ item.estimatePrice }}</view>
 							</view>
-						</block>
+						</block> 
 						<block slot="btn">
 							<view class="fot-text">
 								<view class="text-grey">
@@ -78,7 +83,7 @@
 				<app-load v-model="isLoading"></app-load>
 			</scroll-view>
 		</view>
-		<app-lmodal ref="customModal" :detail="employeeList" :platformsList="platformsList" modalTitle="结算" @onClickCancel="cancel"
+		<app-lmodal ref="customModal" :clerkIndex="clerkIndex" :detail="employeeList" :platformsList="platformsList" modalTitle="结算" @onClickCancel="cancel"
 			@onClickConfirm="confirm"></app-lmodal>
 		<view class="foot_box"></view>
 		<!-- 自定义底部导航 -->
@@ -135,6 +140,7 @@
 				tabCurrent: 'ing',
 				goodsList: [],
 				platformsList: [],
+				clerkIndex: '',
 				employeeList: [],
 				payItem: {},
 				loading: false,
@@ -199,6 +205,26 @@
 						uni.stopPullDownRefresh();
 					});
 			},
+			delItem(item) {
+				let that = this;
+				uni.showModal({
+					title: '删除订单',
+					content: '确定要删除这个订单么？',
+					cancelText: '取消',
+					confirmText: '删除',
+					success: res => {
+						if (res.confirm) {
+							that.$api('bill.deleteOrder', {
+								id: item.id
+							}).then(res => {
+								if (res.flag) {
+									that.getGoodsList();
+								}
+							});
+						}
+					}
+				});
+			},
 			bindChange1(e) {
 				this.startDate = e
 				this.getGoodsList();
@@ -212,6 +238,7 @@
 				that.$api('bill.employeeList', {}).then(res => {
 					if (res.flag) {
 						that.employeeList = res.data
+						that.clerkIndex = res.data[0].name
 					}
 				});
 			}, 
@@ -346,17 +373,25 @@
 </script>
 
 <style scoped lang="scss">
+	.item-close {
+		position: absolute;
+		top: -20rpx;
+		right: 20rpx;
+	
+		image {
+			width: 60rpx;
+			height: 60rpx;
+		}
+	}
 	.head_box {
 		background-color: #2b4055;
 	}
-
 	.tab-box {
 		overflow: hidden;
 		width: 100%;
 		height: 84rpx;
 		border: 1px solid #f8f8ff;
 		border-radius: 40rpx 40rpx 0 0;
-
 		.tab-item {
 			flex: 1;
 			line-height: 84rpx;

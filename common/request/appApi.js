@@ -179,6 +179,21 @@ export default {
 			auth: true,
 			method: 'POST',
 			// desc: '付款平台',
+		},deleteOrder: {
+			url: 'orderCar/deleteOrder',
+			auth: true,
+			method: 'POST',
+			// desc: '订单删除',
+		},deleteMember: {
+			url: 'vipCar/deleteVip',
+			auth: true,
+			method: 'POST',
+			// desc: '会员删除',
+		},deleteRecharge: {
+			url: 'logsRecharge/deleteRecharge',
+			auth: true,
+			method: 'POST',
+			// desc: '充值记录删除',
 		},
 	},
 	/** 同步路由 ↓ **/

@@ -99,6 +99,10 @@
 				type: Array,
 				default: []
 			},
+			clerkIndex: {
+				type: String,
+				default: ''
+			},
 			platformsList: {
 				type: Array,
 				default: []
@@ -113,6 +117,8 @@
 				projectList: [],
 				value: []
 			};
+		},
+		mounted(){
 		},
 		methods: {
 			// 选择车型
@@ -133,7 +139,7 @@
 				this.vipNumber = vipNumber;
 				this.isShowModal = true;
 				this.inputSerialNum = '';
-				this.value = [];
+				this.value = [this.clerkIndex];
 			},
 			handleCancel() {
 				this.isShowModal = false;

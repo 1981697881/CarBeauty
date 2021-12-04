@@ -47,7 +47,7 @@
 									<block v-for="(item,index) in goods.rechargeList" :key='index'>
 										<view class="cont-tier flex flex-wrap justify-between">
 											<view class="tier-left">
-												<view class="">({{index+1}}) 充值时间：{{item.createDate}}</view>
+												<view class="del-item"><image @tap.stop="delItem(goods,item)" class="img" src="../../static/imgs/user/close.png" mode="scaleToFill"></image>({{index+1}}) 充值时间：{{item.createDate}}</view>
 												<view class="cent-tip">充值金额：￥{{item.rechargeAmount}}</view>
 											</view>
 										</view>
@@ -175,6 +175,26 @@
 						uni.stopPullDownRefresh();
 					});
 			},
+			delItem(goods,item) {
+				let that = this;
+				uni.showModal({
+					title: '删除订单',
+					content: '确定要删除这个记录么？',
+					cancelText: '取消',
+					confirmText: '删除',
+					success: res => {
+						if (res.confirm) {
+							that.$api('bill.deleteRecharge', {
+								id: item.id
+							}).then(res => {
+								if (res.flag) {
+									that.queryPackage(goods);
+								}
+							});
+						}
+					}
+				});
+			},
 			queryPackage(item) {
 				let that = this;
 				if (item.queryPackage) {
@@ -244,7 +264,7 @@
 			},
 			handlerVip(goods) {
 				let that = this;
-				let handlerType = ['充值', '修改充值信息', '修改用户信息']
+				let handlerType = ['充值', '修改充值信息', '修改用户信息','删除会员']
 				uni.showActionSheet({
 					itemList: handlerType,
 					success: function(res) {
@@ -258,14 +278,34 @@
 								id: goods.id
 							})
 						} else {
-							that.jump('/pages/user/wallet/recharge', {
-								vipName: goods.vipName,
-								vipNumber: goods.vipNumber,
-								phoneNumber: goods.phoneNumber,
-								handlerType: res.tapIndex,
-								vipProjectCars: JSON.stringify(goods.vipProjectCars),
-								id: goods.id
-							})
+							if(res.tapIndex < 3){
+								that.jump('/pages/user/wallet/recharge', {
+									vipName: goods.vipName,
+									vipNumber: goods.vipNumber,
+									phoneNumber: goods.phoneNumber,
+									handlerType: res.tapIndex,
+									vipProjectCars: JSON.stringify(goods.vipProjectCars),
+									id: goods.id
+								})
+							}else{
+								uni.showModal({
+									title: '删除会员',
+									content: '确定要删除该会员么？',
+									cancelText: '取消',
+									confirmText: '删除',
+									success: res => {
+										if (res.confirm) {
+											that.$api('bill.deleteMember', {
+												vipNumber: goods.vipNumber
+											}).then(res => {
+												if (res.flag) {
+													that.getVipList();
+												}
+											});
+										}
+									}
+								});
+							}
 						}
 					},
 					fail: function(res) {
@@ -336,7 +376,12 @@
 			width: 100%;
 		}
 	}
-
+	.del-item{
+		image{
+			width: 30rpx;
+			height: 30rpx;
+		}
+	}
 	.content-item {
 		width: 100%;
 		max-height: 200rpx;
@@ -379,8 +424,9 @@
 			padding: 30rpx;
 			border-bottom: 1rpx solid white;
 			.cont-tier {
-				.tier-left {}
-
+				.tier-left {
+					
+				}
 				.tier-center {
 					text-align: left;
 
