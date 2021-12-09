@@ -22,9 +22,10 @@
 									<view class="x-f">
 										<input class="list-val" disabled="inputDisabled" @tap="plateShow = true"
 											v-model.trim="form.carNumber" placeholder="请输入车牌" />
-										<ocr-navigator @onSuccess="platenumSuccess" certificateType="platenum">
+										<!-- <ocr-navigator @onSuccess="platenumSuccess" certificateType="platenum">
 											<text class="cuIcon-scan icon-size"></text>
-										</ocr-navigator>
+										</ocr-navigator> -->
+										<text class="cuIcon-scan icon-size" @tap="photoRecognition"></text>
 										<plate-input v-if="plateShow" :plate="form.carNumber" @export="setPlate"
 											@close="plateShow = false" />
 									</view>
@@ -168,6 +169,7 @@
 					cosmetologyId: '',
 					phoneNumber: '',
 					carBrand: '',
+					carPhoto: '',
 					carModel: '五座',
 					estimatePrice: 0,
 					projectCommission: 0
@@ -226,6 +228,8 @@
 						const tempFilePaths = res.tempFilePaths;
 						tempFilePaths.forEach(img => {
 							that.$tools.uploadImage('file/imgUpload', img).then(uploadFileRes => {
+								console.log(uploadFileRes)
+								that.form.carPhoto = uploadFileRes;
 								that.$api('bill.licensePlateRecognition', {
 									url: uploadFileRes
 								}).then(reso => {

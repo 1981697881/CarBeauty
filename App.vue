@@ -16,7 +16,7 @@ export default {
 				uni.getSystemInfo({
 					success: function(e) {
 						Vue.prototype.StatusBar = e.statusBarHeight;
-						// #ifdef H5
+	 					// #ifdef H5
 						Vue.prototype.CustomBar = e.statusBarHeight + 45;
 						if (that.$wxsdk.isWechat()) {
 							platform = 'wxOfficialAccount';
@@ -24,7 +24,7 @@ export default {
 							platform = 'H5';
 						}
 						// #endif
-
+ 
 						// #ifdef APP-PLUS
 						platform = 'App';
 						if (e.platform == 'android') {
